@@ -190,9 +190,33 @@
     <script>
       login("show");
 
-      const backendUrl = "https://staging-nginz-https.zinfra.io";
-      const CALLS_MAX = 1;
+      const stagingUrl = "https://staging-nginz-https.zinfra.io";
+      const prodUrl = "https://prod-nginz-https.wire.com";
+      let backendUrl = stagingUrl;
+      
+      const thisurl = document.URL;
+      const params = thisurl.split('?');
+      let args = null;
+      if (params.length > 1)
+	  args = params[1].split('&');
 
+      if (args) {
+	  for (const arg of args) {
+	      const kv = arg.split('=');
+	      const k = kv[0];
+	      const v = kv[1];
+
+	      if (k === 'env') {
+		  if (v === 'prod')
+		      backendUrl = prodUrl;
+		  else
+		      backendUrl = v;
+	      }
+	  }
+      }
+
+      
+      const CALLS_MAX = 1;
       const callset = {
 	  nconns: 0,
 	  tcalls: [],
