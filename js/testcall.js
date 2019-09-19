@@ -59,9 +59,12 @@ function gatherTimeoutHandler(tcall)
     }
     else {
 	const sdp = tcall.rtc.localDescription;
-	
-	if (tcall.gatherh)
-	    tcall.gatherh(tcall, sdp);	
+
+	if (tcall.call_gatherh) {
+	    tcall.call_gatherh = false;
+	    if (tcall.gatherh)
+		tcall.gatherh(tcall, sdp);
+	}
     }
     
 }
@@ -98,8 +101,11 @@ function gatheringHandler(tcall)
 	    if (tcall.tmr)
 		clearTimeout(tcall.tmr);
 	
-	    if (tcall.gatherh)
-		tcall.gatherh(tcall, sdp);
+	    if (tcall.call_gatherh) {
+		tcall.call_gatherh = false;
+		if (tcall.gatherh)
+		    tcall.gatherh(tcall, sdp);
+	    }
 	}
 	
 	break;
@@ -139,13 +145,12 @@ function candidateHandler(tcall, cand) {
 	}
     }
     else {
-	doLog('candidateHandler: cand=NULL');
-    }
-    
-    if (!cand) {
 	doLog('candidateHandler: end-of-candidates cands=' + tcall.cands);
-	
-	const sdp = rtc.localDescription;
+
+	clearTimeout(tcall.tmr);
+	if (tcall.call_gather) {
+	    
+	}
 	
 	return;
     }
@@ -221,6 +226,7 @@ function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, er
 	connectedh: connectedh,
 	cands: 0,
 	connected: 0,
+	call_gatherh: true,
     }
 
     pc_Create(tcall);
@@ -281,7 +287,7 @@ function tcall_answer(tcall, sdp)
 		
 		rtc.setLocalDescription(answer)
 		    .then(() => {
-			tcall.tmr = setTimeout(gatherTimeoutHandler, GATHER_TIMEOUT);
+			tcall.tmr = setTimeout(gatherTimeoutHandler, GATHER_TIMEOUT, tcall);
 		    })
 		    .catch((err) => {
 			doLog('setLocalDescription: failed' + err);
