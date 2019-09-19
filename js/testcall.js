@@ -212,7 +212,7 @@ function pc_Create(tcall)
     tcall.rtc = rtc;
 }
 
-function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, errorh)
+function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, errorh, statsh)
 {
     const tcall = {
 	convid: convid,
@@ -223,9 +223,19 @@ function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, er
 	candh: candh,
 	errorh: errorh,
 	connectedh: connectedh,
+	statsh: statsh,
 	cands: 0,
 	connected: 0,
 	call_gatherh: true,
+	stats: {
+	    ploss: 0,
+	    lastploss: 0,
+	    bytes: 0,	    
+	    lastbytes: 0,
+	    packets: 0,
+	    lastpackets: 0,
+	    
+	}
     }
 
     pc_Create(tcall);
@@ -359,14 +369,17 @@ function tcall_stats(tcall)
 	    stats.forEach(stat => {
 		if (stat.type === 'inbound-rtp') {
 		    //console.log('inbound-rtp: ', stat);
-		    const ploss = stat.fractionLost * 100;
-		    //console.log('tcall: ' + tcall.userid + ' lost=' + ploss);
-		    if (ploss > 1)
-			console.log('tcall: ' + tcall.userid + ' lost=' + Math.round(ploss) + '%');
-		    /*
-		    if (stat.fract0Lost > 10) {
-		    }
-		    */
+		    const ploss = stat.packetsLost;		    
+		    tcall.stats.ploss = ploss - tcall.stats.lastploss;
+		    tcall.stats.lastploss = ploss;
+		    
+		    const b = stat.bytesReceived;
+		    tcall.stats.bytes = Math.round((b - tcall.stats.lastbytes) / 1024);
+		    tcall.stats.lastbytes = b;
+
+		    const p = stat.packetsReceived;
+		    tcall.stats.packets = (p - tcall.stats.lastpackets);
+		    tcall.stats.lastpackets = p;					 
 		}
 	    });
 	})
