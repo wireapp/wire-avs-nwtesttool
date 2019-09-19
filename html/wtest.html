@@ -4,6 +4,10 @@
   <head>
     <title></title>
     <style type="text/css">
+      table, th, td {
+	  border: 1px solid black;
+	  text-align: center;
+      }
       #popupbox{
 	  position: absolute;
 	  top: 30%;
@@ -216,10 +220,13 @@
       }
 
       
-      const CALLS_MAX = 1;
+      const CALLS_MAX = 100; // 50
+      const PCOEFF = 0.4;
       const callset = {
 	  nconns: 0,
 	  tcalls: [],
+	  ploss: 0.0,
+	  pf: 0.0,
       };
     
       let wconfig;
@@ -229,9 +236,27 @@
 	  wlogin(backendUrl, username, password, loginSuccess, loginError);
       }
 
-      function stats_handler() {
-	  for(tcall of callset.tcalls)
-	      tcall_stats(tcall);
+      function update_stats() {
+	  const tb = document.getElementById('infoTable');
+	  const rows = tb.rows;
+	  
+	  rows[0].cells[1].textContent = callset.nconns.toString();
+	  let ploss = 0;
+	  let bw = 0;
+	  let pkts = 0;
+	  for (const tcall of callset.tcalls) {
+	      bw += tcall.stats.bytes;
+	      pkts += tcall.stats.packets;
+	      ploss += tcall.stats.ploss;
+	  }
+	  callset.ploss = Math.round(((ploss/pkts) * 10000.0))/100;
+	  if (!isNaN(callset.ploss)) {
+	      const pf = PCOEFF * callset.ploss + (1.0 - PCOEFF) * callset.pf;
+	      callset.pf = Math.round(pf * 100) / 100;
+	  }
+	  rows[0].cells[2].textContent = bw.toString();
+	  rows[0].cells[3].textContent = pkts.toString();
+	  rows[0].cells[4].textContent = callset.pf.toString();
       }
     
       function gather_answer_handler(tcall, sdp) {
@@ -247,11 +272,6 @@
 	  tcall2.peer = tcall;
 	  tcall.peer = tcall2;
 
-	  const h3 = document.createElement('h3');
-	  h3.textContent = 'Gathered TURN. Connecting...';
-	  
-	  document.body.appendChild(h3);
-	  
 	  tcall_answer(tcall2, sdp);
 	  
       }
@@ -277,12 +297,60 @@
 		  console.log('*** CONNECTED: ' + tcall.userid + '<->' + peer.userid);
 		  callset.nconns++;
 
-		  const h3 = document.createElement('h3');
-		  h3.textContent = 'Connected';
-		  document.body.appendChild(h3);
+		  if (callset.nconns == 1) {
+		      const tb = document.createElement('table');
+		      let th = document.createElement('th');
+		      th.textContent = 'Media Type';
+		      tb.appendChild(th);
+		      
+		      th = document.createElement('th');
+		      th.textContent = 'Number';
+		      tb.appendChild(th);
+		      
+		      th = document.createElement('th');
+		      th.textContent = 'KBytes/s';
+		      tb.appendChild(th);
+
+		      th = document.createElement('th');
+		      th.textContent = 'packets/s';
+		      tb.appendChild(th);
+
+		      th = document.createElement('th');
+		      th.textContent = 'Lost (%)';
+		      tb.appendChild(th);
+		      
+		      let tr = document.createElement('tr');
+		      let td = document.createElement('td');
+		      td.textContent = 'audio';
+		      tr.appendChild(td);
+
+		      td = document.createElement('td');
+		      td.textContent = '0';
+		      tr.appendChild(td);
+
+		      td = document.createElement('td');
+		      td.textContent = '0';
+		      tr.appendChild(td);
+		      
+		      td = document.createElement('td');
+		      td.textContent = '0';
+		      tr.appendChild(td);
+
+		      td = document.createElement('td');
+		      td.textContent = '0';
+		      tr.appendChild(td);
+		      
+		      tb.appendChild(tr);
+		      tb.setAttribute('id', 'infoTable');
+		      
+		      document.body.appendChild(tb);
+		  }
 		  
-		  if (callset.nconns < CALLS_MAX)
-		      newCall();
+		  if (callset.nconns < CALLS_MAX) {
+		      if (isNaN(callset.pf) || callset.pf  < 5.0) {
+			  setTimeout(() => newCall(), 1000);
+		      }
+		  }
 	      }
 	  }
       }
@@ -290,8 +358,9 @@
       
       function createCall(offer) {
 	  const userid = callset.tcalls.length.toString();
-	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler, cand_handler, connected_handler, gather_error_handler);
+	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler, null, connected_handler, gather_error_handler, null);
 	  callset.tcalls.push(tcall);
+	  console.log('createTcall=', tcall);
 
 	  return tcall;
       }
@@ -299,8 +368,6 @@
       function newCall() {
 	  const tcall = createCall(true);
 	  tcall_start(tcall, "1", tcall.userid);
-
-	  
       }
     
       function loginSuccess(wcfg) {
@@ -328,7 +395,7 @@
 
 	  candUl = document.createElement('ul');
 	  document.body.appendChild(candUl);
-	  
+
 	  wconfig = wcfg;
 
 	  doStart();
@@ -342,7 +409,11 @@
       }
 
       function doStart() {
-	  setInterval(stats_handler, 1000);
+	  setInterval(() => {
+	      for(const tcall of callset.tcalls)
+		  tcall_stats(tcall);
+	      update_stats();
+	  }, 1000);
 	  newCall();
       }
     </script>
