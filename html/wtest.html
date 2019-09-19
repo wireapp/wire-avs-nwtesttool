@@ -190,8 +190,8 @@
     <script>
       login("show");
 
-      const stagingUrl = "https://staging-nginz-https.zinfra.io";
-      const prodUrl = "https://prod-nginz-https.wire.com";
+      const stagingUrl = 'https://staging-nginz-https.zinfra.io';
+      const prodUrl = 'https://prod-nginz-https.wire.com';
       let backendUrl = stagingUrl;
       
       const thisurl = document.URL;
@@ -223,6 +223,7 @@
       };
     
       let wconfig;
+      let candUl;
       
       function backendLogin(username, password) {
 	  wlogin(backendUrl, username, password, loginSuccess, loginError);
@@ -255,6 +256,12 @@
 	  
       }
 
+      function cand_handler(cand) {
+	  const li = document.createElement('li');
+	  li.textContent = cand.toString();
+	  candUl.appendChild(li);
+      }
+      
       function gather_error_handler(tcall, err) {
 	  console.log('tcall.userid: ' + tcall.userid + ' gather error=' + err);
 
@@ -273,7 +280,6 @@
 		  const h3 = document.createElement('h3');
 		  h3.textContent = 'Connected';
 		  document.body.appendChild(h3);
-
 		  
 		  if (callset.nconns < CALLS_MAX)
 		      newCall();
@@ -284,12 +290,12 @@
       
       function createCall(offer) {
 	  const userid = callset.tcalls.length.toString();
-	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler, connected_handler, gather_error_handler);
+	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler, cand_handler, connected_handler, gather_error_handler);
 	  callset.tcalls.push(tcall);
 
 	  return tcall;
       }
-
+      
       function newCall() {
 	  const tcall = createCall(true);
 	  tcall_start(tcall, "1", tcall.userid);
@@ -312,9 +318,16 @@
 
 	  const h3 = document.createElement('h3');
 	  
-          h3.textContent = "TURN server(s)";
+          h3.textContent = "Configured TURN server(s):";
 	  document.body.appendChild(h3);
           document.body.appendChild(ul);
+
+	  const h3a = document.createElement('h3');
+	  h3a.textContent = 'Gathering candidates...';
+          document.body.appendChild(h3a);
+
+	  candUl = document.createElement('ul');
+	  document.body.appendChild(candUl);
 	  
 	  wconfig = wcfg;
 

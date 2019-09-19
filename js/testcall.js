@@ -53,8 +53,17 @@ function gatherTimeoutHandler(tcall)
 {
     doLog('gather timeout: userid=' + tcall.userid);
 
-    if (tcall.errorh)
-	tcall.errorh(tcall, 'gather-timeout');
+    if (tcall.cands === 0) {
+	if (tcall.errorh)
+	    tcall.errorh(tcall, 'gather-timeout');
+    }
+    else {
+	const sdp = tcall.rtc.localDescription;
+	
+	if (tcall.gatherh)
+	    tcall.gatherh(tcall, sdp);	
+    }
+    
 }
 
 function gatheringHandler(tcall)
@@ -124,6 +133,10 @@ function candidateHandler(tcall, cand) {
     if (cand !== null) {
 	doLog('candidateHandler: cand=' + cand.candidate + ' type=' + cand.type + ' mindex=' + mindex);
 	tcall.cands++;
+
+	if (tcall.candh) {
+	    tcall.candh(cand.candidate);
+	}
     }
     else {
 	doLog('candidateHandler: cand=NULL');
@@ -195,7 +208,7 @@ function pc_Create(tcall)
     tcall.rtc = rtc;
 }
 
-function tcall_new(cfg, convid, userid, clientid, gatherh, connectedh, errorh)
+function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, errorh)
 {
     const tcall = {
 	convid: convid,
@@ -203,6 +216,7 @@ function tcall_new(cfg, convid, userid, clientid, gatherh, connectedh, errorh)
 	clientid: clientid,
 	turn_servers: cfg,
 	gatherh: gatherh,
+	candh: candh,
 	errorh: errorh,
 	connectedh: connectedh,
 	cands: 0,
@@ -334,7 +348,6 @@ function tcall_stats(tcall)
 
     if (!rtc)
 	return;
-
 
     rtc.getStats()
 	.then((stats) => {
