@@ -256,9 +256,9 @@
 	  
       }
 
-      function cand_handler(cand) {
+      function cand_handler(tcall, cand) {
 	  const li = document.createElement('li');
-	  li.textContent = cand.toString();
+	  li.textContent = 'Cand[userid=' + tcall.userid + ']=' + cand.toString();
 	  candUl.appendChild(li);
       }
       

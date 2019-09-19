@@ -130,12 +130,12 @@ function candidateHandler(tcall, cand) {
     if (!rtc)
 	return;
  
-    if (cand !== null) {
+    if (cand && cand.candidate) {
 	doLog('candidateHandler: cand=' + cand.candidate + ' type=' + cand.type + ' mindex=' + mindex);
 	tcall.cands++;
 
 	if (tcall.candh) {
-	    tcall.candh(cand.candidate);
+	    tcall.candh(tcall, cand.candidate);
 	}
     }
     else {
