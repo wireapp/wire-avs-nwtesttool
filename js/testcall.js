@@ -1,6 +1,19 @@
 
 const GATHER_TIMEOUT = 10000;
 
+function callGatherHandler(tcall)
+{
+    const sdp = tcall.rtc.localDescription;
+
+    if (tcall.tmr)
+	clearTimeout(tcall.tmr);
+    
+    if (tcall.call_gatherh) {
+	tcall.call_gatherh = false;
+	if (tcall.gatherh)
+	    tcall.gatherh(tcall, sdp);
+    }
+}
 
 function sdpMap(sdp) {
     const sdpLines = [];
@@ -58,13 +71,7 @@ function gatherTimeoutHandler(tcall)
 	    tcall.errorh(tcall, 'gather-timeout');
     }
     else {
-	const sdp = tcall.rtc.localDescription;
-
-	if (tcall.call_gatherh) {
-	    tcall.call_gatherh = false;
-	    if (tcall.gatherh)
-		tcall.gatherh(tcall, sdp);
-	}
+	callGatherHandler(tcall);
     }
     
 }
@@ -98,14 +105,7 @@ function gatheringHandler(tcall)
 	    doLog('gatherHandler: SDP-' + sdp.type.toString() + ' not enough cands');
 	}
 	else {
-	    if (tcall.tmr)
-		clearTimeout(tcall.tmr);
-	
-	    if (tcall.call_gatherh) {
-		tcall.call_gatherh = false;
-		if (tcall.gatherh)
-		    tcall.gatherh(tcall, sdp);
-	    }
+	    callGatherHandler(tcall);
 	}
 	
 	break;
@@ -143,14 +143,13 @@ function candidateHandler(tcall, cand) {
 	if (tcall.candh) {
 	    tcall.candh(tcall, cand.candidate);
 	}
+
+	callGatherHandler(tcall);	
     }
     else {
 	doLog('candidateHandler: end-of-candidates cands=' + tcall.cands);
 
-	clearTimeout(tcall.tmr);
-	if (tcall.call_gather) {
-	    
-	}
+	callGatherHandler(tcall);
 	
 	return;
     }
