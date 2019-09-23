@@ -278,6 +278,9 @@
       }
 
       function update_stats() {
+	  if (!callset.is_running)
+	      return;
+	  
 	  const tb = document.getElementById('infoTable');
 	  const rows = tb.rows;
 	  
