@@ -168,15 +168,27 @@
 	  backendLogin(username, password);
       }
 
+      function stopAllCalls() {
+	  for (const tcall of callset.tcalls) {
+	      tcall_close(tcall);
+	      if (tcall.peer)
+		  tcall_close(tcall.peer);
+	  }
+	  callset.nconns = 0;
+	  callset.tcalls = [];
+      }
+      
       function restartClick() {
 	  const restartb = document.getElementById('restartBtn');
 	  if (callset.is_running) {
 	      callset.is_running = false;
+	      stopAllCalls();
 	      restartb.textContent = 'START';
 	      restartb.style.backgroundColor = 'rgb(0, 197, 0)';
 	  }
 	  else {
 	      callset.is_running = true,
+	      candUl.innerHTML = '';
 	      restartb.textContent = 'STOP';
 	      restartb.style.backgroundColor = 'rgb(197, 0, 0)';
 	      newCall();
@@ -250,6 +262,7 @@
       const CALLS_MAX = 100; // 50
       const PCOEFF = 0.4;
       const callset = {
+	  setup: true,
 	  nconns: 0,
 	  tcalls: [],
 	  is_running: true,
@@ -305,9 +318,9 @@
       }
 
       function cand_handler(tcall, cand) {
-	  if (callset.nconns > 0)
+	  if (!callset.is_running || callset.nconns > 0)
 	      return;
-	  
+
 	  const li = document.createElement('li');
 	  li.textContent = 'Cand[userid=' + tcall.userid + ']=' + cand.toString();
 	  candUl.appendChild(li);
@@ -320,6 +333,13 @@
       }
       
       function connected_handler(tcall) {
+	  if (!callset.is_running) {
+	      tcall_close(tcall);
+	      return;
+	  }
+
+	  setupUi();
+	  
 	  tcall.connected = true;
 	  const peer = tcall.peer;
 
@@ -328,63 +348,6 @@
 		  console.log('*** CONNECTED: ' + tcall.userid + '<->' + peer.userid);
 		  callset.nconns++;
 
-		  if (callset.nconns == 1) {
-		      const tb = document.createElement('table');
-		      let th = document.createElement('th');
-		      th.textContent = 'Media Type';
-		      tb.appendChild(th);
-		      
-		      th = document.createElement('th');
-		      th.textContent = 'Number';
-		      tb.appendChild(th);
-		      
-		      th = document.createElement('th');
-		      th.textContent = 'KBytes/s';
-		      tb.appendChild(th);
-
-		      th = document.createElement('th');
-		      th.textContent = 'packets/s';
-		      tb.appendChild(th);
-
-		      th = document.createElement('th');
-		      th.textContent = 'Lost (%)';
-		      tb.appendChild(th);
-		      
-		      let tr = document.createElement('tr');
-		      let td = document.createElement('td');
-		      td.textContent = 'audio';
-		      tr.appendChild(td);
-
-		      td = document.createElement('td');
-		      td.textContent = '0';
-		      tr.appendChild(td);
-
-		      td = document.createElement('td');
-		      td.textContent = '0';
-		      tr.appendChild(td);
-		      
-		      td = document.createElement('td');
-		      td.textContent = '0';
-		      tr.appendChild(td);
-
-		      td = document.createElement('td');
-		      td.textContent = '0';
-		      tr.appendChild(td);
-		      
-		      tb.appendChild(tr);
-		      tb.setAttribute('id', 'infoTable');
-		      tb.setAttribute('align', 'center');
-
-		      document.body.appendChild(document.createElement('center'));
-		      document.body.appendChild(tb);
-
-		      const restartb = document.createElement('button');
-		      restartb.setAttribute('id', 'restartBtn');
-		      restartb.setAttribute('onclick', 'restartClick();');
-		      restartb.textContent = 'STOP';
-		      document.body.appendChild(restartb);
-		  }
-		  
 		  if (callset.nconns < CALLS_MAX && callset.is_running) {
 		      if (isNaN(callset.pf) || callset.pf  < 5.0) {
 			  setTimeout(() => newCall(), 1000);
@@ -456,6 +419,68 @@
 	  }, 1000);
 	  newCall();
       }
+
+      function setupUi() {
+	  if (!callset.setup)
+	      return;
+	  
+	  callset.setup = false;
+	  const tb = document.createElement('table');
+	  let th = document.createElement('th');
+	  th.textContent = 'Media Type';
+	  tb.appendChild(th);
+	  
+	  th = document.createElement('th');
+	  th.textContent = 'Number';
+	  tb.appendChild(th);
+		      
+	  th = document.createElement('th');
+	  th.textContent = 'KBytes/s';
+	  tb.appendChild(th);
+
+	  th = document.createElement('th');
+	  th.textContent = 'packets/s';
+	  tb.appendChild(th);
+
+	  th = document.createElement('th');
+	  th.textContent = 'Lost (%)';
+	  tb.appendChild(th);
+		      
+	  let tr = document.createElement('tr');
+	  let td = document.createElement('td');
+	  td.textContent = 'audio';
+	  tr.appendChild(td);
+
+	  td = document.createElement('td');
+	  td.textContent = '0';
+	  tr.appendChild(td);
+
+	  td = document.createElement('td');
+	  td.textContent = '0';
+	  tr.appendChild(td);
+		      
+	  td = document.createElement('td');
+	  td.textContent = '0';
+	  tr.appendChild(td);
+
+	  td = document.createElement('td');
+	  td.textContent = '0';
+	  tr.appendChild(td);
+		      
+	  tb.appendChild(tr);
+	  tb.setAttribute('id', 'infoTable');
+	  tb.setAttribute('align', 'center');
+
+	  document.body.appendChild(tb);
+
+	  const restartb = document.createElement('button');
+	  restartb.setAttribute('id', 'restartBtn');
+	  restartb.setAttribute('onclick', 'restartClick();');
+	  restartb.textContent = 'STOP';
+	  document.body.appendChild(restartb);
+      }
+		  
+      
     </script>
   </body>
 </html>
