@@ -1,6 +1,11 @@
 # wire-avs-nwtesttool
 
-How to run:
+2 ways to run:
+
+a) Docker: Follow instructions in Dockerfile
+
+b) For testing use a python web server:
+
 
 1. From root directory run in command line: 
 
