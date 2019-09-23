@@ -11,6 +11,20 @@
 # 3. Start tool from browser with:
 # http://localhost:8080/html/wtest.html
 #
+# Stop test tool:
+#
+# 1. Stop container:
+# docker stop nwtest
+#
+# 2. Remove container:
+# docker rm nwtest
+#
+# Update test tool
+#
+# 1. Stop test tool
+#
+# 2. Re-run test tool
+#
 
 # Parent image
 FROM nginx:alpine
