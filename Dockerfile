@@ -25,6 +25,11 @@
 #
 # 2. Re-run test tool
 #
+# Remove images (only for cleanup)
+#
+# docker image rm nwtesttool
+# docker image rm nginx:alpine
+#
 
 # Parent image
 FROM nginx:alpine
