@@ -30,6 +30,17 @@
 	  border-radius: 8px;
 	  color: rgb(255, 255, 255);
       }
+      #restartBtn {
+	  background-color: rgb(197, 0, 0);
+	  border-radius: 8px;
+	  color: rgb(255, 255, 255);
+	  width: 20%;
+	  margin: auto;
+	  margin-top: 20px;
+	  display: block;
+	  padding: 5px;
+	  justify-content: center;	  
+      }      
       #username {
 	  box-shadow: none;
 	  caret-color: rgb(35, 145, 211);
@@ -156,6 +167,22 @@
 	  login("hide");	  
 	  backendLogin(username, password);
       }
+
+      function restartClick() {
+	  const restartb = document.getElementById('restartBtn');
+	  if (callset.is_running) {
+	      callset.is_running = false;
+	      restartb.textContent = 'START';
+	      restartb.style.backgroundColor = 'rgb(0, 197, 0)';
+	  }
+	  else {
+	      callset.is_running = true,
+	      restartb.textContent = 'STOP';
+	      restartb.style.backgroundColor = 'rgb(197, 0, 0)';
+	      newCall();
+	  }
+	  
+      }
 	  
     </script>
   </head>
@@ -225,6 +252,7 @@
       const callset = {
 	  nconns: 0,
 	  tcalls: [],
+	  is_running: true,
 	  ploss: 0.0,
 	  pf: 0.0,
       };
@@ -277,6 +305,9 @@
       }
 
       function cand_handler(tcall, cand) {
+	  if (callset.nconns > 0)
+	      return;
+	  
 	  const li = document.createElement('li');
 	  li.textContent = 'Cand[userid=' + tcall.userid + ']=' + cand.toString();
 	  candUl.appendChild(li);
@@ -342,11 +373,19 @@
 		      
 		      tb.appendChild(tr);
 		      tb.setAttribute('id', 'infoTable');
-		      
+		      tb.setAttribute('align', 'center');
+
+		      document.body.appendChild(document.createElement('center'));
 		      document.body.appendChild(tb);
+
+		      const restartb = document.createElement('button');
+		      restartb.setAttribute('id', 'restartBtn');
+		      restartb.setAttribute('onclick', 'restartClick();');
+		      restartb.textContent = 'STOP';
+		      document.body.appendChild(restartb);
 		  }
 		  
-		  if (callset.nconns < CALLS_MAX) {
+		  if (callset.nconns < CALLS_MAX && callset.is_running) {
 		      if (isNaN(callset.pf) || callset.pf  < 5.0) {
 			  setTimeout(() => newCall(), 1000);
 		      }
@@ -358,7 +397,8 @@
       
       function createCall(offer) {
 	  const userid = callset.tcalls.length.toString();
-	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler, null, connected_handler, gather_error_handler, null);
+	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler,
+				  cand_handler, connected_handler, gather_error_handler, null);
 	  callset.tcalls.push(tcall);
 	  console.log('createTcall=', tcall);
 
