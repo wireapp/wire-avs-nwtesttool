@@ -42,8 +42,10 @@ RUN mkdir js
 RUN mkdir html
 
 # Copy static html and js directory
-COPY ./html/ /usr/share/nginx/
-COPY ./js/ /usr/share/nginx/js/
+COPY ./html/ /usr/share/nginx/html/html/
+COPY ./js/ /usr/share/nginx/html/js/
+
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Make port available to the world outside this container
 EXPOSE 80
