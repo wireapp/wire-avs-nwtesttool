@@ -28,5 +28,5 @@ python test/local-ssl-server.py
 
 3. Open in browser:
 
-https://localhost:443
+https://localhost:4443/html/wtest.html
 
