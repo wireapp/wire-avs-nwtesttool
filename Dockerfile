@@ -45,6 +45,7 @@ RUN mkdir html
 COPY ./html/ /usr/share/nginx/html/html/
 COPY ./js/ /usr/share/nginx/html/js/
 
+# Copy an nginx config to set our main page as the index
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Make port available to the world outside this container
