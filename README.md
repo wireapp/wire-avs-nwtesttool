@@ -1,10 +1,19 @@
 # wire-avs-nwtesttool
 
-2 ways to run:
+3 ways to run/build:
 
-a) Docker: Follow instructions in Dockerfile
+a) Docker (local): Follow instructions in Dockerfile
 
-b) For testing use a python web server:
+b) Docker (for publish): Follow instructions in Makefile
+
+  * Ensure you have access to quay.io (`docker login quay.io`)
+    * If not, ask someone in the Backend team for an account that gives you write access to this repo
+  * Change the version in the Makefile
+  * Run `WIRE_ENV={staging|prod} make docker-push-image`
+  * This also changes the respective JSON file under deploy/, ensure to commit it afterwards too.
+  * Once the image is published to quay.io, go to the ElasticBeanstalk console on the webapp's AWS account: https://eu-west-1.console.aws.amazon.com/elasticbeanstalk/home?region=eu-west-1#/applications select the desired environment and upload the json file in the option `Upload and Deploy`
+
+c) For testing use a python web server:
 
 
 1. From root directory run in command line:
