@@ -7,7 +7,7 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
 	password: password,
     };
 
-    fetch(backendUrl + "/login?persist=true", {
+    fetch(backendUrl + "/login?persist=false", {
 	method: 'POST',
 	body: JSON.stringify(data), // data can be `string` or {object}!
 	headers:{
@@ -22,7 +22,7 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
 		}
 		return;
 	    }
-	    
+
 	    resp.json()
 		.then(jauth => {
 		    fetch(backendUrl + "/calls/config/v2", {
@@ -43,7 +43,7 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
 			    }
 			    return;
 			}
-		      
+
 			resp2.json()
 			    .then((jconfig) => {
 				if (worker)
@@ -69,5 +69,5 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
 	    if(errHandler) {
 		errHandler(error);
 	    }
-	});    
+	});
 }
