@@ -1,11 +1,11 @@
 # Network Test Tool
-# 
+#
 # Run test tool using Docker:
 #
 # 1. Create Docker image
 # Run from top level directory: docker build -t nwtesttool .
 #
-# 2. Create container 
+# 2. Create container
 # docker run --name nwtest -d -p 8080:80 nwtesttool
 #
 # 3. Start tool from browser with:
@@ -42,9 +42,9 @@ RUN mkdir js
 RUN mkdir html
 
 # Copy static html and js directory
-COPY ./html/ /usr/share/nginx/html/html/
-COPY ./js/ /usr/share/nginx/html/js/
+COPY ./html/ /usr/share/nginx/
+COPY ./js/ /usr/share/nginx/js/
 
 # Make port available to the world outside this container
-EXPOSE 8080
+EXPOSE 80
 
