@@ -28,7 +28,7 @@
 # Remove images (only for cleanup)
 #
 # docker image rm nwtesttool
-# docker image rm nginx:alpine
+# docker image rm nginx:1.17.4-alpine-perl
 #
 
 # Parent image
