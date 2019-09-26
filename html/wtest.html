@@ -175,6 +175,7 @@
 		  tcall_close(tcall.peer);
 	  }
 	  callset.nconns = 0;
+	  callset.nattempts = 0;
 	  callset.tcalls = [];
       }
       
@@ -182,15 +183,18 @@
 	  const restartb = document.getElementById('restartBtn');
 	  if (callset.is_running) {
 	      callset.is_running = false;
+	      restartb.setAttribute('disabled', 'true');
 	      stopAllCalls();
 	      restartb.textContent = 'START';
 	      restartb.style.backgroundColor = 'rgb(0, 197, 0)';
+	      restartb.setAttribute('disabled', 'false');
 	  }
 	  else {
 	      callset.is_running = true,
 	      candUl.innerHTML = '';
 	      restartb.textContent = 'STOP';
 	      restartb.style.backgroundColor = 'rgb(197, 0, 0)';
+	      callset.nattempts = 1;
 	      newCall();
 	  }
 	  
@@ -264,6 +268,7 @@
       const callset = {
 	  setup: true,
 	  nconns: 0,
+	  nattempts: 0,
 	  tcalls: [],
 	  is_running: true,
 	  ploss: 0.0,
@@ -292,6 +297,13 @@
 	      bw += tcall.stats.bytes;
 	      pkts += tcall.stats.packets;
 	      ploss += tcall.stats.ploss;
+
+	      const peer = tcall.peer;
+	      if (peer) {
+		  bw += peer.stats.bytes;
+		  pkts += peer.stats.packets;
+		  ploss += peer.stats.ploss;
+	      }
 	  }
 	  callset.ploss = Math.round(((ploss/pkts) * 10000.0))/100;
 	  if (!isNaN(callset.ploss)) {
@@ -342,6 +354,9 @@
 	  }
 
 	  setupUi();
+
+	  if (tcall.connected)
+	      return;
 	  
 	  tcall.connected = true;
 	  const peer = tcall.peer;
@@ -351,8 +366,9 @@
 		  console.log('*** CONNECTED: ' + tcall.userid + '<->' + peer.userid);
 		  callset.nconns++;
 
-		  if (callset.nconns < CALLS_MAX && callset.is_running) {
-		      if (isNaN(callset.pf) || callset.pf  < 5.0) {
+		  if (callset.nattempts < CALLS_MAX && callset.is_running) {		      
+		      if (isNaN(callset.pf) || callset.pf < 5.0) {
+			  callset.nattempts++;
 			  setTimeout(() => newCall(), 1000);
 		      }
 		  }
@@ -420,6 +436,7 @@
 		  tcall_stats(tcall);
 	      update_stats();
 	  }, 1000);
+	  callset.nattempts = 1;
 	  newCall();
       }
 
