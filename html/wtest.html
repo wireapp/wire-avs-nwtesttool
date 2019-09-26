@@ -238,9 +238,7 @@
     <script>
       login("show");
 
-      // Note that backendUrl is defined in config.js
-      console.log(window.backendHttpsUrl);
-      const backendUrl = window.backendHttpsUrl;
+      let backendUrl = window.backendHttpsUrl;
       const thisurl = document.URL;
       const params = thisurl.split('?');
       let args = null;
