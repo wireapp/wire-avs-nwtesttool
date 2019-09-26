@@ -34,14 +34,6 @@
 # Parent image
 FROM nginx:1.17.4-alpine-perl
 
-# Add the lua module
-# RUN apk add --no-cache nginx-mod-http-lua
-
-# This should be set to either staging or prod
-ARG WIRE_ENV=staging
-
-RUN echo "Build for ${WIRE_ENV}"
-
 # Set the working directory
 WORKDIR ./usr/share/nginx/html/
 
@@ -52,9 +44,6 @@ RUN mkdir html
 # Copy static html and js directory
 COPY ./html/ /usr/share/nginx/html/html/
 COPY ./js/ /usr/share/nginx/html/js/
-
-# Run some magic sed which will set the right backend environment
-# RUN sed -i.bak -e "s/let backendUrl = .*/let backendUrl = ${WIRE_ENV}Url;/g" /usr/share/nginx/html/html/wtest.html
 
 # Copy an nginx config to set our main page as the index
 COPY nginx.conf /etc/nginx/nginx.conf
