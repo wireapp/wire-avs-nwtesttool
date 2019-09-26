@@ -1,7 +1,7 @@
 SHELL            := /usr/bin/env bash
 LANG             := en_US.UTF-8
 DOCKER_USER      ?= quay.io/wire
-VERSION          ?= 1.0.8
+VERSION          ?= 1.0.10
 WIRE_ENV         ?=
 DOCKER_TAG       ?= $(VERSION)-$(WIRE_ENV)
 
