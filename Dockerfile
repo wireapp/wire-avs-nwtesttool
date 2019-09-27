@@ -1,11 +1,11 @@
 # Network Test Tool
-# 
+#
 # Run test tool using Docker:
 #
 # 1. Create Docker image
 # Run from top level directory: docker build -t nwtesttool .
 #
-# 2. Create container 
+# 2. Create container
 # docker run --name nwtest -d -p 8080:80 nwtesttool
 #
 # 3. Start tool from browser with:
@@ -28,11 +28,11 @@
 # Remove images (only for cleanup)
 #
 # docker image rm nwtesttool
-# docker image rm nginx:alpine
+# docker image rm nginx:1.17.4-alpine-perl
 #
 
 # Parent image
-FROM nginx:alpine
+FROM nginx:1.17.4-alpine-perl
 
 # Set the working directory
 WORKDIR ./usr/share/nginx/html/
@@ -45,6 +45,9 @@ RUN mkdir html
 COPY ./html/ /usr/share/nginx/html/html/
 COPY ./js/ /usr/share/nginx/html/js/
 
+# Copy an nginx config to set our main page as the index
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Make port available to the world outside this container
-EXPOSE 8080
+EXPOSE 80
 
