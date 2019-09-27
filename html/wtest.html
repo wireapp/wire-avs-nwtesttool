@@ -287,7 +287,6 @@
 	  const tb = document.getElementById('infoTable');
 	  const rows = tb.rows;
 
-	  rows[0].cells[1].textContent = callset.nconns.toString();
 	  let ploss = 0;
 	  let bw = 0;
 	  let pkts = 0;
@@ -301,6 +300,7 @@
 	      const pf = PCOEFF * callset.ploss + (1.0 - PCOEFF) * callset.pf;
 	      callset.pf = Math.round(pf * 100) / 100;
 	  }
+	  rows[0].cells[1].textContent = callset.nconns.toString();
 	  rows[0].cells[2].textContent = bw.toString();
 	  rows[0].cells[3].textContent = pkts.toString();
 	  rows[0].cells[4].textContent = callset.pf.toString();
