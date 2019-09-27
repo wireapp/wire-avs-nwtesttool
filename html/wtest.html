@@ -12,15 +12,15 @@
 	  position: absolute;
 	  top: 30%;
 	  width: 60%;
-	  margin-left: 20%; 
+	  margin-left: 20%;
 	  margin-right: 20%;
 	  margin-top: 0px;
-	  padding-top: 10px; 
-	  padding-bottom: 20px; 
-	  background: rgb(220, 220, 220); 
+	  padding-top: 10px;
+	  padding-bottom: 20px;
+	  background: rgb(220, 220, 220);
 	  border: solid #000000 2px;
 	  border-radius: 8px;
-	  font-family: arial; 
+	  font-family: arial;
 	  visibility: hidden;
 	  align-items: center;
 	  text-align: center;
@@ -39,8 +39,8 @@
 	  margin-top: 20px;
 	  display: block;
 	  padding: 5px;
-	  justify-content: center;	  
-      }      
+	  justify-content: center;
+      }
       #username {
 	  box-shadow: none;
 	  caret-color: rgb(35, 145, 211);
@@ -65,7 +65,7 @@
 	  outline: none;
 	  padding: 0px 16px 0px 8px;
 	  text-transform: uppercase;
-      }	  
+      }
       #password {
 	  box-shadow: none;
 	  caret-color: rgb(35, 145, 211);
@@ -90,7 +90,7 @@
 	  outline: none;
 	  padding: 0px 16px 0px 8px;
 	  text-transform: uppercase;
-      }	  
+      }
       #loginBtn {
 	  color: rgb(255, 255, 255);
 	  font-weight: 600;
@@ -154,7 +154,7 @@
 	  if(showhide == "show"){
 	      document.getElementById('popupbox').style.visibility="visible";
 	  }else if(showhide == "hide"){
-	      document.getElementById('popupbox').style.visibility="hidden"; 
+	      document.getElementById('popupbox').style.visibility="hidden";
 	  }
       }
 
@@ -164,26 +164,26 @@
 	  console.log("username=" + username);
 	  console.log("password=" + password);
 
-	  login("hide");	  
+	  login("hide");
 	  backendLogin(username, password);
       }
 
       function stopAllCalls() {
 	  for (const tcall of callset.tcalls) {
 	      tcall_close(tcall);
-	      if (tcall.peer)
-		  tcall_close(tcall.peer);
 	  }
 	  callset.nconns = 0;
 	  callset.nattempts = 0;
 	  callset.tcalls = [];
       }
-      
+
       function restartClick() {
 	  const restartb = document.getElementById('restartBtn');
 	  if (callset.is_running) {
 	      callset.is_running = false;
 	      restartb.setAttribute('disabled', 'true');
+	      if (statsInterval)
+		  clearInterval(statsInterval);
 	      stopAllCalls();
 	      restartb.textContent = 'START';
 	      restartb.style.backgroundColor = 'rgb(0, 197, 0)';
@@ -194,12 +194,11 @@
 	      candUl.innerHTML = '';
 	      restartb.textContent = 'STOP';
 	      restartb.style.backgroundColor = 'rgb(197, 0, 0)';
-	      callset.nattempts = 1;
-	      newCall();
+	      doStart();
 	  }
-	  
+
       }
-	  
+
     </script>
   </head>
   <body>
@@ -231,38 +230,37 @@
 
     <p id="turn_servers"> </p>
     <p id="progress"> </p>
-    
+
+    <script src="../js/config.js"></script>
     <script src="../js/wlogin.js"></script>
     <script src="../js/testcall.js"></script>
     <script>
       login("show");
 
-      const stagingUrl = 'https://staging-nginz-https.zinfra.io';
-      const prodUrl = 'https://prod-nginz-https.wire.com';
-      let backendUrl = stagingUrl;
-      
+      let backendUrl = window.backendHttpsUrl;
+
       const thisurl = document.URL;
       const params = thisurl.split('?');
       let args = null;
       if (params.length > 1)
-	  args = params[1].split('&');
+      args = params[1].split('&');
 
       if (args) {
-	  for (const arg of args) {
-	      const kv = arg.split('=');
-	      const k = kv[0];
-	      const v = kv[1];
+          for (const arg of args) {
+              const kv = arg.split('=');
+              const k = kv[0];
+              const v = kv[1];
 
-	      if (k === 'env') {
-		  if (v === 'prod')
-		      backendUrl = prodUrl;
-		  else
-		      backendUrl = v;
-	      }
-	  }
+              if (k === 'env') {
+                  if (v === 'prod')
+                      backendUrl = 'https://prod-nginz-https.wire.com';
+                  else
+                      backendUrl = v;
+                  }
+              }
       }
 
-      
+
       const CALLS_MAX = 100; // 50
       const PCOEFF = 0.4;
       const callset = {
@@ -274,10 +272,10 @@
 	  ploss: 0.0,
 	  pf: 0.0,
       };
-    
+
       let wconfig;
       let candUl;
-      
+
       function backendLogin(username, password) {
 	  wlogin(backendUrl, username, password, loginSuccess, loginError);
       }
@@ -285,11 +283,10 @@
       function update_stats() {
 	  if (!callset.is_running)
 	      return;
-	  
+
 	  const tb = document.getElementById('infoTable');
 	  const rows = tb.rows;
-	  
-	  rows[0].cells[1].textContent = callset.nconns.toString();
+
 	  let ploss = 0;
 	  let bw = 0;
 	  let pkts = 0;
@@ -297,24 +294,18 @@
 	      bw += tcall.stats.bytes;
 	      pkts += tcall.stats.packets;
 	      ploss += tcall.stats.ploss;
-
-	      const peer = tcall.peer;
-	      if (peer) {
-		  bw += peer.stats.bytes;
-		  pkts += peer.stats.packets;
-		  ploss += peer.stats.ploss;
-	      }
 	  }
 	  callset.ploss = Math.round(((ploss/pkts) * 10000.0))/100;
 	  if (!isNaN(callset.ploss)) {
 	      const pf = PCOEFF * callset.ploss + (1.0 - PCOEFF) * callset.pf;
 	      callset.pf = Math.round(pf * 100) / 100;
 	  }
+	  rows[0].cells[1].textContent = callset.nconns.toString();
 	  rows[0].cells[2].textContent = bw.toString();
 	  rows[0].cells[3].textContent = pkts.toString();
 	  rows[0].cells[4].textContent = callset.pf.toString();
       }
-    
+
       function gather_answer_handler(tcall, sdp) {
 	  console.log('tcall.userid: ' + tcall.userid + ' ' + sdp.type + '-gathered');
 
@@ -329,7 +320,7 @@
 	  tcall.peer = tcall2;
 
 	  tcall_answer(tcall2, sdp);
-	  
+
       }
 
       function cand_handler(tcall, cand) {
@@ -340,13 +331,13 @@
 	  li.textContent = 'Cand[userid=' + tcall.userid + ']=' + cand.toString();
 	  candUl.appendChild(li);
       }
-      
+
       function gather_error_handler(tcall, err) {
 	  console.log('tcall.userid: ' + tcall.userid + ' gather error=' + err);
 
 	  tcall_close(tcall);
       }
-      
+
       function connected_handler(tcall) {
 	  if (!callset.is_running) {
 	      tcall_close(tcall);
@@ -357,7 +348,7 @@
 
 	  if (tcall.connected)
 	      return;
-	  
+
 	  tcall.connected = true;
 	  const peer = tcall.peer;
 
@@ -366,7 +357,7 @@
 		  console.log('*** CONNECTED: ' + tcall.userid + '<->' + peer.userid);
 		  callset.nconns++;
 
-		  if (callset.nattempts < CALLS_MAX && callset.is_running) {		      
+		  if (callset.nattempts < CALLS_MAX && callset.is_running) {
 		      if (isNaN(callset.pf) || callset.pf < 5.0) {
 			  callset.nattempts++;
 			  setTimeout(() => newCall(), 1000);
@@ -375,8 +366,8 @@
 	      }
 	  }
       }
-    
-      
+
+
       function createCall(offer) {
 	  const userid = callset.tcalls.length.toString();
 	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler,
@@ -386,17 +377,17 @@
 
 	  return tcall;
       }
-      
+
       function newCall() {
 	  const tcall = createCall(true);
 	  tcall_start(tcall, "1", tcall.userid);
       }
-    
+
       function loginSuccess(wcfg) {
 	  console.log(wcfg);
-	  
+
 	  const ul = document.createElement('ul');
-	  
+
 	  const turns = wcfg.ice_servers;
 	  for (const turn of turns) {
 	      const turl = turn.urls[0];
@@ -406,7 +397,7 @@
 	  }
 
 	  const h3 = document.createElement('h3');
-	  
+
           h3.textContent = "Configured TURN server(s):";
 	  document.body.appendChild(h3);
           document.body.appendChild(ul);
@@ -425,16 +416,17 @@
 
       function loginError(error) {
 	  const h3 = document.createElement('h3');
-	  
+
           h3.textContent = "Login failed: " + error;
-	  document.body.appendChild(h3);	  
+	  document.body.appendChild(h3);
       }
 
       function doStart() {
-	  setInterval(() => {
-	      for(const tcall of callset.tcalls)
+	  statsInterval = setInterval(() => {
+	      for(const tcall of callset.tcalls) {
 		  tcall_stats(tcall);
-	      update_stats();
+		  update_stats();
+	      }
 	  }, 1000);
 	  callset.nattempts = 1;
 	  newCall();
@@ -443,17 +435,17 @@
       function setupUi() {
 	  if (!callset.setup)
 	      return;
-	  
+
 	  callset.setup = false;
 	  const tb = document.createElement('table');
 	  let th = document.createElement('th');
 	  th.textContent = 'Media Type';
 	  tb.appendChild(th);
-	  
+
 	  th = document.createElement('th');
 	  th.textContent = 'Number';
 	  tb.appendChild(th);
-		      
+
 	  th = document.createElement('th');
 	  th.textContent = 'KBytes/s';
 	  tb.appendChild(th);
@@ -465,7 +457,7 @@
 	  th = document.createElement('th');
 	  th.textContent = 'Lost (%)';
 	  tb.appendChild(th);
-		      
+
 	  let tr = document.createElement('tr');
 	  let td = document.createElement('td');
 	  td.textContent = 'audio';
@@ -478,7 +470,7 @@
 	  td = document.createElement('td');
 	  td.textContent = '0';
 	  tr.appendChild(td);
-		      
+
 	  td = document.createElement('td');
 	  td.textContent = '0';
 	  tr.appendChild(td);
@@ -486,7 +478,7 @@
 	  td = document.createElement('td');
 	  td.textContent = '0';
 	  tr.appendChild(td);
-		      
+
 	  tb.appendChild(tr);
 	  tb.setAttribute('id', 'infoTable');
 	  tb.setAttribute('align', 'center');
@@ -499,8 +491,8 @@
 	  restartb.textContent = 'STOP';
 	  document.body.appendChild(restartb);
       }
-		  
-      
+
+
     </script>
   </body>
 </html>
