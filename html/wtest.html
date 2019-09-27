@@ -179,15 +179,16 @@
       
       function restartClick() {
 	  const restartb = document.getElementById('restartBtn');
+	  console.log('restartClick');
 	  if (callset.is_running) {
 	      callset.is_running = false;
-	      restartb.setAttribute('disabled', 'true');
+	      restartb.disabled = true;
 	      if (statsInterval)
 		  clearInterval(statsInterval);
 	      stopAllCalls();
 	      restartb.textContent = 'START';
 	      restartb.style.backgroundColor = 'rgb(0, 197, 0)';
-	      restartb.setAttribute('disabled', 'false');
+	      restartb.disabled = false;
 	  }
 	  else {
 	      callset.is_running = true,
