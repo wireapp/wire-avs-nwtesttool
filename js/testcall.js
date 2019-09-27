@@ -5,8 +5,10 @@ function callGatherHandler(tcall)
 {
     const sdp = tcall.rtc.localDescription;
 
-    if (tcall.tmr)
+    if (tcall.tmr) {
 	clearTimeout(tcall.tmr);
+	tcall.tmr = null;
+    }
     
     if (tcall.call_gatherh) {
 	tcall.call_gatherh = false;
@@ -225,6 +227,7 @@ function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, er
 	connectedh: connectedh,
 	statsh: statsh,
 	peer: null,
+	tmr: null,
 	cands: 0,
 	connected: 0,
 	call_gatherh: true,
@@ -412,6 +415,11 @@ function tcall_stats(tcall)
 function tcall_close(tcall)
 {
     doLog('tcall_close: userid=' + tcall.userid);
+
+    if (tcall.tmr) {
+	clearTimeout(tcall.tmr);
+	tcall.tmr = null;
+    }
     
     if (tcall && tcall.rtc)
 	tcall.rtc.close();
