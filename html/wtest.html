@@ -161,8 +161,6 @@
       function loginClick() {
 	  const username = document.getElementById("username").value;
 	  const password = document.getElementById("password").value;
-	  console.log("username=" + username);
-	  console.log("password=" + password);
 
 	  login("hide");
 	  backendLogin(username, password);
@@ -240,29 +238,18 @@
 
       let backendUrl = window.backendHttpsUrl;
 
-      const thisurl = document.URL;
-      const params = thisurl.split('?');
+      const thisurl = new URL(document.URL);
+      const params = new URLSearchParams(thisurl.search);
       let args = null;
       let statsInterval = null;
       
-      if (params.length > 1)
-      args = params[1].split('&');
-
-      if (args) {
-          for (const arg of args) {
-              const kv = arg.split('=');
-              const k = kv[0];
-              const v = kv[1];
-
-              if (k === 'env') {
-                  if (v === 'prod')
-                      backendUrl = 'https://prod-nginz-https.wire.com';
-                  else
-                      backendUrl = v;
-                  }
-              }
+      if (params.has('env')) {
+	  const env = params.get('env');
+          if (env === 'prod')
+              backendUrl = 'https://prod-nginz-https.wire.com';
+          else
+              backendUrl = env;
       }
-
 
       const CALLS_MAX = 100; // 50
       const PCOEFF = 0.4;
