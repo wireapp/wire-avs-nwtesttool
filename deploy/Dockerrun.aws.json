@@ -1,7 +1,7 @@
 {
     "AWSEBDockerrunVersion": "1",
     "Image": {
-        "Name": "quay.io/wire/avs-nwtesttool:1.0.12"
+        "Name": "quay.io/wire/avs-nwtesttool:1.0.13"
     },
     "Ports": [{
         "ContainerPort": 80,

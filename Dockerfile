@@ -32,7 +32,7 @@
 #
 
 # Parent image
-FROM nginx:1.17.4-alpine-perl
+FROM nginx:1.17.9-alpine-perl
 
 # Set the working directory
 WORKDIR ./usr/share/nginx/html/
