@@ -6,7 +6,7 @@
 # Run from top level directory: docker build -t nwtesttool .
 #
 # 2. Create container
-# docker run --name nwtest -d -p 8080:80 nwtesttool
+# docker run --name nwtest -d -p 8080:8080 nwtesttool
 #
 # 3. Start tool from browser with:
 # http://localhost:8080/html/wtest.html
@@ -28,7 +28,7 @@
 # Remove images (only for cleanup)
 #
 # docker image rm nwtesttool
-# docker image rm nginx:1.17.4-alpine-perl
+# docker image rm nginx:1.17.9-alpine-perl
 #
 
 # Parent image
@@ -37,17 +37,13 @@ FROM nginx:1.17.9-alpine-perl
 # Set the working directory
 WORKDIR ./usr/share/nginx/html/
 
-# Create directories
-RUN mkdir js
-RUN mkdir html
-
 # Copy static html and js directory
 COPY ./html/ /usr/share/nginx/html/html/
 COPY ./js/ /usr/share/nginx/html/js/
 
 # Copy an nginx config to set our main page as the index
-COPY nginx.conf /etc/nginx/nginx.conf
+# Using 'ADD' instead of 'COPY' invalidates the cache
+ADD nginx.conf /etc/nginx/nginx.conf
 
 # Make port available to the world outside this container
-EXPOSE 80
-
+EXPOSE 8080
