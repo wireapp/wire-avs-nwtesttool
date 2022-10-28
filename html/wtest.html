@@ -29,6 +29,18 @@
 	  background-color: rgb(0, 197, 0);
 	  border-radius: 8px;
 	  color: rgb(255, 255, 255);
+      
+      }
+      #LogBtn {
+      background-color: rgb(85, 107, 47);
+      border-radius: 8px;
+      color: rgb(255, 255, 255);
+      width: 20%;
+      margin: auto;
+      margin-top: 20px;
+      display: block;
+      padding: 5px;
+      justify-content: center;
       }
       #restartBtn {
 	  background-color: rgb(197, 0, 0);
@@ -261,6 +273,7 @@
 	  is_running: true,
 	  ploss: 0.0,
 	  pf: 0.0,
+      jitter: 0.0,
       };
 
       let wconfig;
@@ -278,22 +291,30 @@
 	  const rows = tb.rows;
 
 	  let ploss = 0;
+      let jitter = 0;
 	  let bw = 0;
 	  let pkts = 0;
 	  for (const tcall of callset.tcalls) {
 	      bw += tcall.stats.bytes;
 	      pkts += tcall.stats.packets;
 	      ploss += tcall.stats.ploss;
+          jitter += tcall.stats.jitter;
 	  }
 	  callset.ploss = Math.round(((ploss/pkts) * 10000.0))/100;
 	  if (!isNaN(callset.ploss)) {
 	      const pf = PCOEFF * callset.ploss + (1.0 - PCOEFF) * callset.pf;
 	      callset.pf = Math.round(pf * 100) / 100;
 	  }
+        
+      callset.jitter = Math.round(jitter * 1000.0);
+      if (callset.jitter < 0) {callset.jitter = 0;
+      }
+                                   
 	  rows[0].cells[1].textContent = callset.nconns.toString();
 	  rows[0].cells[2].textContent = bw.toString();
 	  rows[0].cells[3].textContent = pkts.toString();
 	  rows[0].cells[4].textContent = callset.pf.toString();
+      rows[0].cells[5].textContent = callset.jitter.toString();
       }
 
       function gather_answer_handler(tcall, sdp) {
@@ -443,11 +464,15 @@
 	  th = document.createElement('th');
 	  th.textContent = 'packets/s';
 	  tb.appendChild(th);
-
+     
 	  th = document.createElement('th');
 	  th.textContent = 'Lost (%)';
 	  tb.appendChild(th);
-
+      
+      th = document.createElement('th');
+      th.textContent = 'jitter (ms)';
+      tb.appendChild(th);
+      
 	  let tr = document.createElement('tr');
 	  let td = document.createElement('td');
 	  td.textContent = 'audio';
@@ -468,7 +493,11 @@
 	  td = document.createElement('td');
 	  td.textContent = '0';
 	  tr.appendChild(td);
-
+      
+      td = document.createElement('td');
+            td.textContent = '0';
+            tr.appendChild(td);
+      
 	  tb.appendChild(tr);
 	  tb.setAttribute('id', 'infoTable');
 	  tb.setAttribute('align', 'center');
@@ -480,6 +509,13 @@
 	  restartb.setAttribute('onclick', 'restartClick();');
 	  restartb.textContent = 'STOP';
 	  document.body.appendChild(restartb);
+      
+      const logb = document.createElement('button');
+      logb.setAttribute('id', 'LogBtn');
+      logb.setAttribute('onclick', 'saveLog();');
+      logb.textContent = 'Extract Log';
+      document.body.appendChild(logb);
+      
       }
 
 

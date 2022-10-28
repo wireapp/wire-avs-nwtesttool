@@ -1,6 +1,8 @@
 
 const GATHER_TIMEOUT = 10000;
 
+var statsJson = [];
+
 function callGatherHandler(tcall)
 {
     const sdp = tcall.rtc.localDescription;
@@ -57,6 +59,26 @@ function sdpMap(sdp) {
 function doLog(msg)
 {
     console.log(msg);
+}
+
+function saveLog() {
+    const filename =`log-${new Date().toLocaleDateString()}.txt`
+    const data = JSON.stringify(statsJson, null, 4);
+    var file = new Blob([data], {type: 'text/plain'});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+            var a = document.createElement("a"),
+                            url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+            }, 0);
+    }
 }
 
 function ccallGatheringHandler(tcall, type, sdp)
@@ -186,7 +208,7 @@ function pc_Create(tcall)
 
     let rtc;
 
-    rtc = new RTCPeerConnection(config);
+    rtc = new window.RTCPeerConnection(config);
 
     rtc.onicegatheringstatechange = () => gatheringHandler(tcall);
     rtc.oniceconnectionstatechange = () => connectionHandler(tcall);
@@ -238,6 +260,8 @@ function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, er
 	    lastbytes: 0,
 	    packets: 0,
 	    lastpackets: 0,
+        jitter: 0,
+        lastjitter: 0,
 	    
 	}
     }
@@ -360,7 +384,6 @@ function addMedia(rtc)
     */
 }
 
-
 function tcall_stats(tcall)
 {
     const rtc = tcall.rtc;
@@ -369,13 +392,15 @@ function tcall_stats(tcall)
 	return;
 
     rtc.getStats()
-	.then((stats) => {
-	    stats.forEach(stat => {
-		if (stat.type === 'inbound-rtp') {
-		    //console.log('inbound-rtp: ', stat);
-		    const ploss = stat.packetsLost;		    
-		    tcall.stats.ploss = ploss - tcall.stats.lastploss;
-		    tcall.stats.lastploss = ploss;
+        .then((stats) => {
+            let statsObj = {};
+            
+            stats.forEach(stat => {
+                statsObj[stat.type] = stat;
+                if (stat.type === 'inbound-rtp') {
+                    //console.log('inbound-rtp: ', stat);
+                    const ploss = stat.packetsLost;
+                    tcall.stats.ploss = ploss - tcall.stats.lastploss;
 		    
 		    const b = stat.bytesReceived;
 		    tcall.stats.bytes = Math.round((b - tcall.stats.lastbytes) / 1024);
@@ -383,9 +408,15 @@ function tcall_stats(tcall)
 
 		    const p = stat.packetsReceived;
 		    tcall.stats.packets = (p - tcall.stats.lastpackets);
-		    tcall.stats.lastpackets = p;					 
-		}
+		    tcall.stats.lastpackets = p;
+            
+		    const j = stat.jitter;
+                    tcall.stats.jitter = (j - tcall.stats.lastjitter);
+                    tcall.stats.lastjitter = j;            
+	        }
 	    });
+            console.log("Stats blob=" + JSON.stringify(statsJson));
+            statsJson.push(statsObj);
 	})
 	.catch((err) => console.log('SNDR stats failed: ' + err));
     
