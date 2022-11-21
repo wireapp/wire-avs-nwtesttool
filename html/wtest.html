@@ -1,246 +1,289 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
   <head>
     <title></title>
     <style type="text/css">
-      table, th, td {
-	  border: 1px solid black;
-	  text-align: center;
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        text-align: center;
       }
-      #popupbox{
-	  position: absolute;
-	  top: 30%;
-	  width: 60%;
-	  margin-left: 20%;
-	  margin-right: 20%;
-	  margin-top: 0px;
-	  padding-top: 10px;
-	  padding-bottom: 20px;
-	  background: rgb(220, 220, 220);
-	  border: solid #000000 2px;
-	  border-radius: 8px;
-	  font-family: arial;
-	  visibility: hidden;
-	  align-items: center;
-	  text-align: center;
+
+      #popupbox {
+        position: absolute;
+        top: 30%;
+        width: 60%;
+        margin-left: 20%;
+        margin-right: 20%;
+        margin-top: 0px;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        background: rgb(220, 220, 220);
+        border: solid #000000 2px;
+        border-radius: 8px;
+        font-family: arial;
+        visibility: hidden;
+        align-items: center;
+        text-align: center;
       }
+
       #startBtn {
-	  background-color: rgb(0, 197, 0);
-	  border-radius: 8px;
-	  color: rgb(255, 255, 255);
-      
+        background-color: rgb(0, 197, 0);
+        border-radius: 8px;
+        color: rgb(255, 255, 255);
       }
+
       #LogBtn {
-      background-color: rgb(85, 107, 47);
-      border-radius: 8px;
-      color: rgb(255, 255, 255);
-      width: 20%;
-      margin: auto;
-      margin-top: 20px;
-      display: block;
-      padding: 5px;
-      justify-content: center;
+        background-color: rgb(85, 107, 47);
+        border-radius: 8px;
+        color: rgb(255, 255, 255);
+        width: 20%;
+        margin: auto;
+        margin-top: 20px;
+        display: block;
+        padding: 5px;
+        justify-content: center;
       }
+
       #restartBtn {
-	  background-color: rgb(197, 0, 0);
-	  border-radius: 8px;
-	  color: rgb(255, 255, 255);
-	  width: 20%;
-	  margin: auto;
-	  margin-top: 20px;
-	  display: block;
-	  padding: 5px;
-	  justify-content: center;
+        background-color: rgb(197, 0, 0);
+        border-radius: 8px;
+        color: rgb(255, 255, 255);
+        width: 20%;
+        margin: auto;
+        margin-top: 20px;
+        display: block;
+        padding: 5px;
+        justify-content: center;
       }
+
       #username {
-	  box-shadow: none;
-	  caret-color: rgb(35, 145, 211);
-	  color: rgb(52, 56, 59);
-	  font-weight: 300;
-	  font-size: 14px;
-	  line-height: 24px;
-	  opacity: 1;
-	  width: 80%;
-	  -webkit-box-align: center;
-	  align-items: center;
-	  display: flex;
-	  -webkit-box-pack: justify;
-	  justify-content: space-between;
-	  background: rgb(255, 255, 255);
-	  border-width: initial;
-	  border-style: none;
-	  border-color: initial;
-	  border-image: initial;
-	  border-radius: 4px;
-	  margin: 0px 0px 4px;
-	  outline: none;
-	  padding: 0px 16px 0px 8px;
-	  text-transform: uppercase;
+        box-shadow: none;
+        caret-color: rgb(35, 145, 211);
+        color: rgb(52, 56, 59);
+        font-weight: 300;
+        font-size: 14px;
+        line-height: 24px;
+        opacity: 1;
+        width: 80%;
+        -webkit-box-align: center;
+        align-items: center;
+        display: flex;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        background: rgb(255, 255, 255);
+        border-width: initial;
+        border-style: none;
+        border-color: initial;
+        border-image: initial;
+        border-radius: 4px;
+        margin: 0px 0px 4px;
+        outline: none;
+        padding: 0px 16px 0px 8px;
+        text-transform: uppercase;
       }
+
       #password {
-	  box-shadow: none;
-	  caret-color: rgb(35, 145, 211);
-	  color: rgb(52, 56, 59);
-	  font-weight: 300;
-	  font-size: 14px;
-	  line-height: 24px;
-	  opacity: 1;
-	  width: 80%;
-	  -webkit-box-align: center;
-	  align-items: center;
-	  display: flex;
-	  -webkit-box-pack: justify;
-	  justify-content: space-between;
-	  background: rgb(255, 255, 255);
-	  border-width: initial;
-	  border-style: none;
-	  border-color: initial;
-	  border-image: initial;
-	  border-radius: 4px;
-	  margin: 0px 0px 4px;
-	  outline: none;
-	  padding: 0px 16px 0px 8px;
-	  text-transform: uppercase;
+        box-shadow: none;
+        caret-color: rgb(35, 145, 211);
+        color: rgb(52, 56, 59);
+        font-weight: 300;
+        font-size: 14px;
+        line-height: 24px;
+        opacity: 1;
+        width: 80%;
+        -webkit-box-align: center;
+        align-items: center;
+        display: flex;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        background: rgb(255, 255, 255);
+        border-width: initial;
+        border-style: none;
+        border-color: initial;
+        border-image: initial;
+        border-radius: 4px;
+        margin: 0px 0px 4px;
+        outline: none;
+        padding: 0px 16px 0px 8px;
+        text-transform: uppercase;
       }
+
       #loginBtn {
-	  color: rgb(255, 255, 255);
-	  font-weight: 600;
-	  font-size: 14px;
-	  opacity: 0.56;
-	  text-align: center;
-	  text-overflow: ellipsis;
-	  text-transform: uppercase;
-	  white-space: nowrap;
-	  background-color: rgb(35, 145, 211);
-	  cursor: default;
-	  height: 32px;
-	  line-height: initial;
-	  max-width: 100%;
-	  min-width: 32px;
-	  touch-action: manipulation;
-	  width: 32px;
-	  -webkit-box-align: center;
-	  align-items: center;
-	  -webkit-box-pack: center;
-	  justify-content: center;
-	  overflow: hidden;
-	  border-width: 0px;
-	  border-style: initial;
-	  border-color: initial;
-	  border-image: initial;
-	  border-radius: 50%;
-	  outline: none;
-	  padding: 0px;
-	  text-decoration: none;
-	  transition: all 0.24s ease 0s;
-	  margin: 0px -10px 0px 0px;
+        color: rgb(255, 255, 255);
+        font-weight: 600;
+        font-size: 14px;
+        opacity: 0.56;
+        text-align: center;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        white-space: nowrap;
+        background-color: rgb(35, 145, 211);
+        cursor: default;
+        height: 32px;
+        line-height: initial;
+        max-width: 100%;
+        min-width: 32px;
+        touch-action: manipulation;
+        width: 32px;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        overflow: hidden;
+        border-width: 0px;
+        border-style: initial;
+        border-color: initial;
+        border-image: initial;
+        border-radius: 50%;
+        outline: none;
+        padding: 0px;
+        text-decoration: none;
+        transition: all 0.24s ease 0s;
+        margin: 0px -10px 0px 0px;
       }
+
       .flex_input {
-	  box-shadow: none;
-	  caret-color: rgb(35, 145, 211);
-	  color: rgb(52, 56, 59);
-	  font-weight: 300;
-	  height: 56px;
-	  line-height: 24px;
-	  opacity: 1;
-	  width: 80%;
-	  -webkit-box-align: center;
-	  align-items: center;
-	  display: flex;
-	  -webkit-box-pack: justify;
-	  justify-content: space-between;
-	  background: rgb(255, 255, 255);
-	  border-width: initial;
-	  border-style: none;
-	  border-color: initial;
-	  border-image: initial;
-	  border-radius: 4px;
-	  margin: 10px 0px 4px 0px;
-	  outline: none;
-	  padding: 0px 20px 0px 0px;
+        box-shadow: none;
+        caret-color: rgb(35, 145, 211);
+        color: rgb(52, 56, 59);
+        font-weight: 300;
+        height: 56px;
+        line-height: 24px;
+        opacity: 1;
+        width: 80%;
+        -webkit-box-align: center;
+        align-items: center;
+        display: flex;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        background: rgb(255, 255, 255);
+        border-width: initial;
+        border-style: none;
+        border-color: initial;
+        border-image: initial;
+        border-radius: 4px;
+        margin: 10px 0px 4px 0px;
+        outline: none;
+        padding: 0px 20px 0px 0px;
       }
     </style>
     <script language="JavaScript" type="text/javascript">
-      function login(showhide){
-	  if(showhide == "show"){
-	      document.getElementById('popupbox').style.visibility="visible";
-	  }else if(showhide == "hide"){
-	      document.getElementById('popupbox').style.visibility="hidden";
-	  }
+      function login(showhide) {
+        if (showhide == "show") {
+          document.getElementById("popupbox").style.visibility = "visible";
+        } else if (showhide == "hide") {
+          document.getElementById("popupbox").style.visibility = "hidden";
+        }
       }
 
       function loginClick() {
-	  const username = document.getElementById("username").value;
-	  const password = document.getElementById("password").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
 
-	  login("hide");
-	  backendLogin(username, password);
+        login("hide");
+        backendLogin(username, password);
       }
 
       function stopAllCalls() {
-	  for (const tcall of callset.tcalls) {
-	      tcall_close(tcall);
-	  }
-	  callset.nconns = 0;
-	  callset.nattempts = 0;
-	  callset.tcalls = [];
+        for (const tcall of callset.tcalls) {
+          tcall_close(tcall);
+        }
+        callset.nconns = 0;
+        callset.nattempts = 0;
+        callset.tcalls = [];
       }
 
       function restartClick() {
-	  const restartb = document.getElementById('restartBtn');
-	  console.log('restartClick');
-	  if (callset.is_running) {
-	      callset.is_running = false;
-	      restartb.disabled = true;
-	      if (statsInterval)
-		  clearInterval(statsInterval);
-	      stopAllCalls();
-	      restartb.textContent = 'START';
-	      restartb.style.backgroundColor = 'rgb(0, 197, 0)';
-	      restartb.disabled = false;
-	  }
-	  else {
-	      callset.is_running = true,
-	      candUl.innerHTML = '';
-	      restartb.textContent = 'STOP';
-	      restartb.style.backgroundColor = 'rgb(197, 0, 0)';
-	      doStart();
-	  }
-
+        const restartb = document.getElementById("restartBtn");
+        console.log("restartClick");
+        if (callset.is_running) {
+          callset.is_running = false;
+          restartb.disabled = true;
+          if (statsInterval) clearInterval(statsInterval);
+          stopAllCalls();
+          restartb.textContent = "START";
+          restartb.style.backgroundColor = "rgb(0, 197, 0)";
+          restartb.disabled = false;
+        } else {
+          (callset.is_running = true), (candUl.innerHTML = "");
+          restartb.textContent = "STOP";
+          restartb.style.backgroundColor = "rgb(197, 0, 0)";
+          doStart();
+        }
       }
-
     </script>
   </head>
+
   <body>
     <center>
-    <div id="popupbox">
-      <!-- <center><h3>Wire Call Tester</h3></center> -->
-      <center>
-	<svg style="overflow:visible; padding:10px 0px 10px 0px;" fill="rgb(52, 56, 59)" viewBox="0 0 57 18" width="57" height="18" class="css-13w01qv"><g><path d="M10.857 14.767a5.45 5.45 0 0 1-1.277-3.51l.002-8.688c0-.708.573-1.284 1.277-1.284s1.277.576 1.277 1.284l-.002 8.687a5.45 5.45 0 0 1-1.277 3.51zm9.58-3.51c0 3.01-2.409 5.458-5.402 5.458a5.413 5.413 0 0 1-3.233-1.073 6.72 6.72 0 0 0 1.61-4.386l.002-8.687A2.565 2.565 0 0 0 10.859 0a2.565 2.565 0 0 0-2.555 2.569l-.002 8.687c0 1.675.64 3.206 1.65 4.386a5.413 5.413 0 0 1-3.233 1.073c-2.993 0-5.442-2.449-5.442-5.459V.66H0v10.597C0 14.975 3.035 18 6.733 18a6.681 6.681 0 0 0 4.164-1.458A6.587 6.587 0 0 0 15.028 18c3.698 0 6.686-3.025 6.686-6.744V.66h-1.278v10.597zm5.11 6.403h1.278V.624h-1.277V17.66zM38.008.327a7.337 7.337 0 0 0-6.073 3.233V.624h-1.278V17.66h1.278V7.72c0-3.367 2.725-6.106 6.073-6.106V.327zm2.394 13.705c-2.485-2.965-2.342-7.416.432-10.208a7.478 7.478 0 0 1 10.141-.436L40.401 14.032zM52.784 3.386a8.75 8.75 0 0 0-12.854-.471c-3.424 3.446-3.424 9.054 0 12.5a8.75 8.75 0 0 0 12.417.002l-.903-.91a7.478 7.478 0 0 1-10.14.434l5.285-5.32 6.195-6.235zM53.964.77h.447v1.16h.136V.77h.45V.643h-1.033V.77zM56.34.643l-.445 1.116L55.45.643h-.21v1.286h.131V.779l.457 1.15h.124l.455-1.145v1.145h.132V.643h-.201z"></path></g></svg>
-      </center>
-      <center>
-	CALL CONNECTIVITY TESTER
-      </center>
-      <center>
-	<div class="flex_input">
-	  <input name="username" id="username" placeholder="Email or username" size="32"/>
-	</div>
-      </center>
-      <center>
-	<div class="flex_input">
-	  <input name="password" id="password" class="pwdinput" placeholder="Password" type="password" size="32"/>
-	  <button id="loginBtn" type="submit" size="32" onclick="loginClick();">
-	    <svg viewBox="0 0 16 16" width="16" height="16" style="fill: rgb(255,255,255)"><g><path transform="rotate(0 8 8)" d="M5.8 1.5L7.3 0l8 8-8 8-1.5-1.5L11.3 9H.7V7h10.6"></path></g>
-	    </svg>
-	  </button>
-	</div>
-	</center>
-    </div>
+      <div id="popupbox">
+        <!-- <center><h3>Wire Call Tester</h3></center> -->
+        <center>
+          <svg
+            style="overflow: visible; padding: 10px 0px 10px 0px"
+            fill="rgb(52, 56, 59)"
+            viewBox="0 0 57 18"
+            width="57"
+            height="18"
+            class="css-13w01qv"
+          >
+            <g>
+              <path
+                d="M10.857 14.767a5.45 5.45 0 0 1-1.277-3.51l.002-8.688c0-.708.573-1.284 1.277-1.284s1.277.576 1.277 1.284l-.002 8.687a5.45 5.45 0 0 1-1.277 3.51zm9.58-3.51c0 3.01-2.409 5.458-5.402 5.458a5.413 5.413 0 0 1-3.233-1.073 6.72 6.72 0 0 0 1.61-4.386l.002-8.687A2.565 2.565 0 0 0 10.859 0a2.565 2.565 0 0 0-2.555 2.569l-.002 8.687c0 1.675.64 3.206 1.65 4.386a5.413 5.413 0 0 1-3.233 1.073c-2.993 0-5.442-2.449-5.442-5.459V.66H0v10.597C0 14.975 3.035 18 6.733 18a6.681 6.681 0 0 0 4.164-1.458A6.587 6.587 0 0 0 15.028 18c3.698 0 6.686-3.025 6.686-6.744V.66h-1.278v10.597zm5.11 6.403h1.278V.624h-1.277V17.66zM38.008.327a7.337 7.337 0 0 0-6.073 3.233V.624h-1.278V17.66h1.278V7.72c0-3.367 2.725-6.106 6.073-6.106V.327zm2.394 13.705c-2.485-2.965-2.342-7.416.432-10.208a7.478 7.478 0 0 1 10.141-.436L40.401 14.032zM52.784 3.386a8.75 8.75 0 0 0-12.854-.471c-3.424 3.446-3.424 9.054 0 12.5a8.75 8.75 0 0 0 12.417.002l-.903-.91a7.478 7.478 0 0 1-10.14.434l5.285-5.32 6.195-6.235zM53.964.77h.447v1.16h.136V.77h.45V.643h-1.033V.77zM56.34.643l-.445 1.116L55.45.643h-.21v1.286h.131V.779l.457 1.15h.124l.455-1.145v1.145h.132V.643h-.201z"
+              ></path>
+            </g>
+          </svg>
+        </center>
+        <center>CALL CONNECTIVITY TESTER</center>
+        <center>
+          <div class="flex_input">
+            <input
+              name="username"
+              id="username"
+              placeholder="Email or username"
+              size="32"
+            />
+          </div>
+        </center>
+        <center>
+          <div class="flex_input">
+            <input
+              name="password"
+              id="password"
+              class="pwdinput"
+              placeholder="Password"
+              type="password"
+              size="32"
+            />
+            <button
+              id="loginBtn"
+              type="submit"
+              size="32"
+              onclick="loginClick();"
+            >
+              <svg
+                viewBox="0 0 16 16"
+                width="16"
+                height="16"
+                style="fill: rgb(255, 255, 255)"
+              >
+                <g>
+                  <path
+                    transform="rotate(0 8 8)"
+                    d="M5.8 1.5L7.3 0l8 8-8 8-1.5-1.5L11.3 9H.7V7h10.6"
+                  ></path>
+                </g>
+              </svg>
+            </button>
+          </div>
+        </center>
+      </div>
     </center>
 
-    <p id="turn_servers"> </p>
-    <p id="progress"> </p>
+    <p id="turn_servers"></p>
+    <p id="progress"></p>
 
     <script src="../js/config.js"></script>
     <script src="../js/wlogin.js"></script>
@@ -254,271 +297,290 @@
       const params = new URLSearchParams(thisurl.search);
       let args = null;
       let statsInterval = null;
-      
-      if (params.has('env')) {
-	  const env = params.get('env');
-          if (env === 'prod')
-              backendUrl = 'https://prod-nginz-https.wire.com';
-          else
-              backendUrl = env;
+
+      if (params.has("env")) {
+        const env = params.get("env");
+        if (env === "prod") backendUrl = "https://prod-nginz-https.wire.com";
+        else backendUrl = env;
       }
 
       const CALLS_MAX = 100; // 50
       const PCOEFF = 0.4;
       const callset = {
-	  setup: true,
-	  nconns: 0,
-	  nattempts: 0,
-	  tcalls: [],
-	  is_running: true,
-	  ploss: 0.0,
-	  pf: 0.0,
-      jitter: 0.0,
+        setup: true,
+        nconns: 0,
+        nattempts: 0,
+        tcalls: [],
+        is_running: true,
+        ploss: 0.0,
+        pf: 0.0,
+        jitter: 0.0,
       };
 
       let wconfig;
       let candUl;
 
       function backendLogin(username, password) {
-	  wlogin(backendUrl, username, password, loginSuccess, loginError);
+        wlogin(backendUrl, username, password, loginSuccess, loginError);
       }
 
       function update_stats() {
-	  if (!callset.is_running)
-	      return;
+        if (!callset.is_running) return;
 
-	  const tb = document.getElementById('infoTable');
-	  const rows = tb.rows;
+        const tb = document.getElementById("infoTable");
+        const rows = tb.rows;
 
-	  let ploss = 0;
-      let jitter = 0;
-	  let bw = 0;
-	  let pkts = 0;
-	  for (const tcall of callset.tcalls) {
-	      bw += tcall.stats.bytes;
-	      pkts += tcall.stats.packets;
-	      ploss += tcall.stats.ploss;
+        let ploss = 0;
+        let jitter = 0;
+        let bw = 0;
+        let pkts = 0;
+        for (const tcall of callset.tcalls) {
+          bw += tcall.stats.bytes;
+          pkts += tcall.stats.packets;
+          ploss += tcall.stats.ploss;
           jitter += tcall.stats.jitter;
-	  }
-	  callset.ploss = Math.round(((ploss/pkts) * 10000.0))/100;
-	  if (!isNaN(callset.ploss)) {
-	      const pf = PCOEFF * callset.ploss + (1.0 - PCOEFF) * callset.pf;
-	      callset.pf = Math.round(pf * 100) / 100;
-	  }
-        
-      callset.jitter = Math.round(jitter * 1000.0);
-      if (callset.jitter < 0) {callset.jitter = 0;
-      }
-                                   
-	  rows[0].cells[1].textContent = callset.nconns.toString();
-	  rows[0].cells[2].textContent = bw.toString();
-	  rows[0].cells[3].textContent = pkts.toString();
-	  rows[0].cells[4].textContent = callset.pf.toString();
-      rows[0].cells[5].textContent = callset.jitter.toString();
+        }
+        callset.ploss = Math.round((ploss / pkts) * 10000.0) / 100;
+        if (!isNaN(callset.ploss)) {
+          const pf = PCOEFF * callset.ploss + (1.0 - PCOEFF) * callset.pf;
+          callset.pf = Math.round(pf * 100) / 100;
+        }
+
+        callset.jitter = Math.round(jitter * 1000.0);
+        if (callset.jitter < 0) {
+          callset.jitter = 0;
+        }
+
+        rows[0].cells[1].textContent = callset.nconns.toString();
+        rows[0].cells[2].textContent = bw.toString();
+        rows[0].cells[3].textContent = pkts.toString();
+        rows[0].cells[4].textContent = callset.pf.toString();
+        rows[0].cells[5].textContent = callset.jitter.toString();
+        rows[0].cells[6].textContent = callset.SFT.toString();
       }
 
       function gather_answer_handler(tcall, sdp) {
-	  console.log('tcall.userid: ' + tcall.userid + ' ' + sdp.type + '-gathered');
+        console.log(
+          "tcall.userid: " + tcall.userid + " " + sdp.type + "-gathered"
+        );
 
-	  tcall_update(tcall.peer, sdp);
+        tcall_update(tcall.peer, sdp);
       }
 
       function gather_offer_handler(tcall, sdp) {
-	  // stop timer
-	  console.log('tcall.userid: ' + tcall.userid + ' ' + sdp.type + '-gathered');
-	  const tcall2 = createCall(false);
-	  tcall2.peer = tcall;
-	  tcall.peer = tcall2;
+        // stop timer
+        console.log(
+          "tcall.userid: " + tcall.userid + " " + sdp.type + "-gathered"
+        );
+        const tcall2 = createCall(false);
+        tcall2.peer = tcall;
+        tcall.peer = tcall2;
 
-	  tcall_answer(tcall2, sdp);
-
+        tcall_answer(tcall2, sdp);
       }
 
       function cand_handler(tcall, cand) {
-	  if (!callset.is_running || callset.nconns > 0)
-	      return;
+        if (!callset.is_running || callset.nconns > 0) return;
 
-	  const li = document.createElement('li');
-	  li.textContent = 'Cand[userid=' + tcall.userid + ']=' + cand.toString();
-	  candUl.appendChild(li);
+        const li = document.createElement("li");
+        li.textContent = "Cand[userid=" + tcall.userid + "]=" + cand.toString();
+        candUl.appendChild(li);
       }
 
       function gather_error_handler(tcall, err) {
-	  console.log('tcall.userid: ' + tcall.userid + ' gather error=' + err);
+        console.log("tcall.userid: " + tcall.userid + " gather error=" + err);
 
-	  tcall_close(tcall);
+        tcall_close(tcall);
       }
 
       function connected_handler(tcall) {
-	  if (!callset.is_running) {
-	      tcall_close(tcall);
-	      return;
-	  }
+        if (!callset.is_running) {
+          tcall_close(tcall);
+          return;
+        }
 
-	  setupUi();
+        setupUi();
 
-	  if (tcall.connected)
-	      return;
+        if (tcall.connected) return;
 
-	  tcall.connected = true;
-	  const peer = tcall.peer;
+        tcall.connected = true;
+        const peer = tcall.peer;
 
-	  if (peer) {
-	      if (peer.connected) {
-		  console.log('*** CONNECTED: ' + tcall.userid + '<->' + peer.userid);
-		  callset.nconns++;
+        if (peer) {
+          if (peer.connected) {
+            console.log("*** CONNECTED: " + tcall.userid + "<->" + peer.userid);
+            callset.nconns++;
 
-		  if (callset.nattempts < CALLS_MAX && callset.is_running) {
-		      if (isNaN(callset.pf) || callset.pf < 5.0) {
-			  callset.nattempts++;
-			  setTimeout(() => newCall(), 1000);
-		      }
-		  }
-	      }
-	  }
+            if (callset.nattempts < CALLS_MAX && callset.is_running) {
+              if (isNaN(callset.pf) || callset.pf < 5.0) {
+                callset.nattempts++;
+                setTimeout(() => newCall(), 1000);
+              }
+            }
+          }
+        }
       }
 
-
       function createCall(offer) {
-	  const userid = callset.tcalls.length.toString();
-	  const tcall = tcall_new(wconfig, "1", userid, "1", offer ? gather_offer_handler : gather_answer_handler,
-				  cand_handler, connected_handler, gather_error_handler, null);
-	  callset.tcalls.push(tcall);
-	  console.log('createTcall=', tcall);
+        const userid = callset.tcalls.length.toString();
+        const tcall = tcall_new(
+          wconfig,
+          "1",
+          userid,
+          "1",
+          offer ? gather_offer_handler : gather_answer_handler,
+          cand_handler,
+          connected_handler,
+          gather_error_handler,
+          null
+        );
+        callset.tcalls.push(tcall);
+        console.log("createTcall=", tcall);
 
-	  return tcall;
+        return tcall;
       }
 
       function newCall() {
-	  const tcall = createCall(true);
-	  tcall_start(tcall, "1", tcall.userid);
+        const tcall = createCall(true);
+        tcall_start(tcall, "1", tcall.userid);
       }
 
       function loginSuccess(wcfg) {
-	  console.log(wcfg);
+        console.log(wcfg);
 
-	  const ul = document.createElement('ul');
+        const ul = document.createElement("ul");
 
-	  const turns = wcfg.ice_servers;
-	  for (const turn of turns) {
-	      const turl = turn.urls[0];
-	      const li = document.createElement('li');
-	      li.textContent = turl;
-	      ul.appendChild(li);
-	  }
+        const turns = wcfg.ice_servers;
+        for (const turn of turns) {
+          const turl = turn.urls[0];
+          const li = document.createElement("li");
+          li.textContent = turl;
+          ul.appendChild(li);
+        }
 
-	  const h3 = document.createElement('h3');
+        const h3 = document.createElement("h3");
 
-          h3.textContent = "Configured TURN server(s):";
-	  document.body.appendChild(h3);
-          document.body.appendChild(ul);
+        h3.textContent = "Configured TURN server(s):";
+        document.body.appendChild(h3);
+        document.body.appendChild(ul);
 
-	  const h3a = document.createElement('h3');
-	  h3a.textContent = 'Gathering candidates...';
-          document.body.appendChild(h3a);
+        const h3a = document.createElement("h3");
+        h3a.textContent = "Gathering candidates...";
+        document.body.appendChild(h3a);
 
-	  candUl = document.createElement('ul');
-	  document.body.appendChild(candUl);
+        candUl = document.createElement("ul");
+        document.body.appendChild(candUl);
 
-	  wconfig = wcfg;
+        wconfig = wcfg;
 
-	  doStart();
+        doStart();
       }
 
       function loginError(error) {
-	  const h3 = document.createElement('h3');
+        const h3 = document.createElement("h3");
 
-          h3.textContent = "Login failed: " + error;
-	  document.body.appendChild(h3);
+        h3.textContent = "Login failed: " + error;
+        document.body.appendChild(h3);
       }
 
       function doStart() {
-	  statsInterval = setInterval(() => {
-	      for(const tcall of callset.tcalls) {
-		  tcall_stats(tcall);
-		  update_stats();
-	      }
-	  }, 1000);
-	  callset.nattempts = 1;
-	  newCall();
+        statsInterval = setInterval(() => {
+          for (const tcall of callset.tcalls) {
+            tcall_stats(tcall);
+            update_stats();
+          }
+        }, 1000);
+        callset.nattempts = 1;
+        newCall();
       }
 
       function setupUi() {
-	  if (!callset.setup)
-	      return;
+        if (!callset.setup) return;
 
-	  callset.setup = false;
-	  const tb = document.createElement('table');
-	  let th = document.createElement('th');
-	  th.textContent = 'Media Type';
-	  tb.appendChild(th);
+        callset.setup = false;
+        const tb = document.createElement("table");
+        let th = document.createElement("th");
+        th.textContent = "Media Type";
+        tb.appendChild(th);
 
-	  th = document.createElement('th');
-	  th.textContent = 'Number';
-	  tb.appendChild(th);
+        th = document.createElement("th");
+        th.textContent = "Number";
+        tb.appendChild(th);
 
-	  th = document.createElement('th');
-	  th.textContent = 'KBytes/s';
-	  tb.appendChild(th);
+        th = document.createElement("th");
+        th.textContent = "KBytes/s";
+        tb.appendChild(th);
 
-	  th = document.createElement('th');
-	  th.textContent = 'packets/s';
-	  tb.appendChild(th);
-     
-	  th = document.createElement('th');
-	  th.textContent = 'Lost (%)';
-	  tb.appendChild(th);
-      
-      th = document.createElement('th');
-      th.textContent = 'jitter (ms)';
-      tb.appendChild(th);
-      
-	  let tr = document.createElement('tr');
-	  let td = document.createElement('td');
-	  td.textContent = 'audio';
-	  tr.appendChild(td);
+        th = document.createElement("th");
+        th.textContent = "packets/s";
+        tb.appendChild(th);
 
-	  td = document.createElement('td');
-	  td.textContent = '0';
-	  tr.appendChild(td);
+        th = document.createElement("th");
+        th.textContent = "Lost (%)";
+        tb.appendChild(th);
 
-	  td = document.createElement('td');
-	  td.textContent = '0';
-	  tr.appendChild(td);
+        th = document.createElement("th");
+        th.textContent = "jitter (ms)";
+        tb.appendChild(th);
 
-	  td = document.createElement('td');
-	  td.textContent = '0';
-	  tr.appendChild(td);
+        th = document.createElement("th");
+        th.textContent = "SFT Status";
+        tb.appendChild(th);
 
-	  td = document.createElement('td');
-	  td.textContent = '0';
-	  tr.appendChild(td);
-      
-      td = document.createElement('td');
-            td.textContent = '0';
-            tr.appendChild(td);
-      
-	  tb.appendChild(tr);
-	  tb.setAttribute('id', 'infoTable');
-	  tb.setAttribute('align', 'center');
+        let tr = document.createElement("tr");
+        let td = document.createElement("td");
+        td.textContent = "audio";
+        tr.appendChild(td);
 
-	  document.body.appendChild(tb);
+        td = document.createElement("td");
+        td.textContent = "0";
+        tr.appendChild(td);
 
-	  const restartb = document.createElement('button');
-	  restartb.setAttribute('id', 'restartBtn');
-	  restartb.setAttribute('onclick', 'restartClick();');
-	  restartb.textContent = 'STOP';
-	  document.body.appendChild(restartb);
-      
-      const logb = document.createElement('button');
-      logb.setAttribute('id', 'LogBtn');
-      logb.setAttribute('onclick', 'saveLog();');
-      logb.textContent = 'Extract Log';
-      document.body.appendChild(logb);
-      
+        td = document.createElement("td");
+        td.textContent = "0";
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        td.textContent = "0";
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        td.textContent = "0";
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        td.textContent = "0";
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        /*if
+   td.textContent = 'NOT OK';
+   td.style.backgroundColor = 'rgb(197, 0, 0)';
+   tr.appendChild(td);
+   else
+   */
+        td.textContent = "OK";
+        td.style.backgroundColor = "rgb(0, 197, 0)";
+        tr.appendChild(td);
+
+        tb.appendChild(tr);
+        tb.setAttribute("id", "infoTable");
+        tb.setAttribute("align", "center");
+
+        document.body.appendChild(tb);
+
+        const restartb = document.createElement("button");
+        restartb.setAttribute("id", "restartBtn");
+        restartb.setAttribute("onclick", "restartClick();");
+        restartb.textContent = "STOP";
+        document.body.appendChild(restartb);
+
+        const logb = document.createElement("button");
+        logb.setAttribute("id", "LogBtn");
+        logb.setAttribute("onclick", "saveLog();");
+        logb.textContent = "Extract Log";
+        document.body.appendChild(logb);
       }
-
-
     </script>
   </body>
 </html>

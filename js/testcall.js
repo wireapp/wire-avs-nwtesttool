@@ -10,14 +10,14 @@ function callGatherHandler(tcall)
     if (tcall.tmr) {
 	clearTimeout(tcall.tmr);
 	tcall.tmr = null;
-    }
+}
     
     if (tcall.call_gatherh) {
 	tcall.call_gatherh = false;
 	if (tcall.gatherh)
 	    tcall.gatherh(tcall, sdp);
     }
-}
+    }
 
 function sdpMap(sdp) {
     const sdpLines = [];
@@ -41,7 +41,7 @@ function sdpMap(sdp) {
 
 	    if (pt != 0)
 		outline = null;
-	}
+    }
 	else if (sdpLine.startsWith('a=rtcp-fb:')) {
 	    outline = null;
 	}
@@ -191,6 +191,30 @@ function signallingHandler(tcall) {
     doLog('signalingHandler: state=' + state);
 }
     
+function pc_CreateSft(offer)
+{
+    console.log('pc_CreateSft:');
+    
+    const config = {
+	bundlePolicy: 'max-bundle',
+	rtcpMuxPolicy: 'require',
+    };
+
+    doLog('pc_Create: creating RTCPeerConnection');
+
+    const pc = window.RTCPeerConnection;
+    const rtc = new pc(config);
+
+    rtc.oniceconnectionstatechange = () => sftConnectionHandler(rtc);
+
+    rtc.setRemoteDescription({type: "offer", sdp: offer}).then() 
+	rtc.createAnswer().then(answer => {
+	    rtc.setLocalDescription(answer)
+	}
+    
+
+    return rtc;
+}
 
 
 function pc_Create(tcall)
@@ -410,9 +434,9 @@ function tcall_stats(tcall)
 		    tcall.stats.packets = (p - tcall.stats.lastpackets);
 		    tcall.stats.lastpackets = p;
             
-		    const j = stat.jitter;
-                    tcall.stats.jitter = (j - tcall.stats.lastjitter);
-                    tcall.stats.lastjitter = j;            
+            const j = stat.jitter;
+            tcall.stats.jitter = (j - tcall.stats.lastjitter);
+            tcall.stats.lastjitter = j;
 	        }
 	    });
             console.log("Stats blob=" + JSON.stringify(statsJson));
