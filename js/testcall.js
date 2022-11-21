@@ -114,11 +114,12 @@ function gatheringHandler(tcall)
     }
 }
 
-function sftConnectionHandler(rtc) {
+function sftConnectionHandler(rtc, sftStatusHandler) {
     const state = rtc.iceConnectionState;
 
     doLog('sftConnectionHandler: state=' + state);
-    // Here we can call a callback to set the SFT OK/NOK status...
+    if (sftStatusHandler)
+	sftStatusHandler(state);    
 }
 
 function connectionHandler(tcall) {
@@ -260,7 +261,7 @@ function sftResponse(url, sdp)
 }
 
 
-function pc_CreateSft(convid, sftMsg)
+function pc_CreateSft(convid, sftMsg, sftStatusHandler)
 {
     console.log('pc_CreateSft:');
     
@@ -274,7 +275,7 @@ function pc_CreateSft(convid, sftMsg)
     const pc = window.RTCPeerConnection;
     const rtc = new pc(config);
 
-    rtc.oniceconnectionstatechange = () => sftConnectionHandler(rtc);
+    rtc.oniceconnectionstatechange = () => sftConnectionHandler(rtc, sftStatusHandler);
 
     rtc.setRemoteDescription({type: "offer", sdp: sftMsg.sdp}).then(() => {
 	rtc.createAnswer().then(answer => {
@@ -533,7 +534,7 @@ function generateVideoTrack()
     return stream.getVideoTracks();    
 }
 
-function tcall_sft(sftUrl) {
+function tcall_sft(sftUrl, sftStatusHandler) {
     const confconn = {
 	version: "3.0",
 	type: "CONFCONN",
@@ -568,7 +569,7 @@ function tcall_sft(sftUrl) {
 		resp.json().then(sftMsg => {
 			console.log("OFFER: ", sftMsg);
 			if (sftMsg.type === 'SETUP')
-			    pc_CreateSft(convid, sftMsg);
+			    pc_CreateSft(convid, sftMsg, sftStatusHandler);
 		    });
 	    }
 	    else {
