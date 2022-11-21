@@ -199,32 +199,6 @@ function signallingHandler(tcall) {
     doLog('signalingHandler: state=' + state);
 }
     
-function pc_CreateSft(offer)
-{
-    console.log('pc_CreateSft:');
-    
-    const config = {
-	bundlePolicy: 'max-bundle',
-	rtcpMuxPolicy: 'require',
-    };
-
-    doLog('pc_Create: creating RTCPeerConnection');
-
-    const pc = window.RTCPeerConnection;
-    const rtc = new pc(config);
-
-    rtc.oniceconnectionstatechange = () => sftConnectionHandler(rtc);
-
-    rtc.setRemoteDescription({type: "offer", sdp: offer}).then() 
-	rtc.createAnswer().then(answer => {
-	    rtc.setLocalDescription(answer)
-	}
-    
-
-    return rtc;
-}
-
-
 function pc_Create(tcall)
 {
     console.log('pc_Create:', tcall);
