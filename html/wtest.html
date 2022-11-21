@@ -385,6 +385,11 @@
 	      li.textContent = turl;
 	      ul.appendChild(li);
 	  }
+	  const sfts = wcfg.sft_servers;
+	  console.log("SFTS=" + sfts);
+	  if (sfts.length > 0)
+	      tcall_sft(sfts[0].urls[0]);
+	  
 
 	  const h3 = document.createElement('h3');
 
@@ -401,7 +406,7 @@
 
 	  wconfig = wcfg;
 
-	  doStart();
+	  //doStart();
       }
 
       function loginError(error) {
