@@ -406,6 +406,11 @@
 	      li.textContent = turl;
 	      ul.appendChild(li);
 	  }
+	  const sfts = wcfg.sft_servers;
+	  console.log("SFTS=" + sfts);
+	  if (sfts.length > 0)
+	      tcall_sft(sfts[0].urls[0], sftStatusHandler);
+	  
 
 	  const h3 = document.createElement('h3');
 
@@ -430,6 +435,10 @@
 
           h3.textContent = "Login failed: " + error;
 	  document.body.appendChild(h3);
+      }
+
+      function sftStatusHandler(connState) {
+	  console.log("SFT status=", connState);
       }
 
       function doStart() {

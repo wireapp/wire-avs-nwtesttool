@@ -136,6 +136,14 @@ function gatheringHandler(tcall)
     }
 }
 
+function sftConnectionHandler(rtc, sftStatusHandler) {
+    const state = rtc.iceConnectionState;
+
+    doLog('sftConnectionHandler: state=' + state);
+    if (sftStatusHandler)
+	sftStatusHandler(state);    
+}
+
 function connectionHandler(tcall) {
     const rtc = tcall.rtc;
     if (!rtc) {
@@ -206,9 +214,8 @@ function pc_Create(tcall)
 
     doLog('pc_Create: creating RTCPeerConnection');
 
-    let rtc;
-
-    rtc = new window.RTCPeerConnection(config);
+    const pc = window.RTCPeerConnection;
+    const rtc = new pc(config);
 
     rtc.onicegatheringstatechange = () => gatheringHandler(tcall);
     rtc.oniceconnectionstatechange = () => connectionHandler(tcall);
@@ -235,6 +242,72 @@ function pc_Create(tcall)
 
     tcall.rtc = rtc;
 }
+
+function sftResponse(url, sdp)
+{
+    console.log("sftResponse: sdp=", sdp);
+    
+    const setup = {
+	version: "3.0",
+	type: "SETUP",
+	sessid: 'jtest',
+	src_userid: 'jtest',
+	src_clientid: '_',
+	dest_userid: 'sft',
+	dest_clientid: '_',
+	resp: false,
+	transient: false,
+	
+	sdp: sdp
+    };
+    
+    fetch(url, {
+	method: 'POST',
+	body: JSON.stringify(setup), // data can be `string` or {object}!
+	headers:{
+	    'Content-Type': 'application/json'
+	}})
+	.then((resp) => {
+	    console.log("SFT says: ", resp);
+	    if (resp.ok) {
+		resp.json()
+		    .then(sftMsg => {
+			console.log("ANSWER: ", sftMsg);
+		    });
+	    }
+	    else {
+		const error = resp.status.toString() + ' ' + resp.statusText;
+		console.log('req failed:', error);
+	    }
+	});    
+}
+
+
+function pc_CreateSft(convid, sftMsg, sftStatusHandler)
+{
+    console.log('pc_CreateSft:');
+    
+    const config = {
+	bundlePolicy: 'max-bundle',
+	rtcpMuxPolicy: 'require',
+    };
+
+    doLog('pc_CreateSft: creating SFT RTCPeerConnection');
+
+    const pc = window.RTCPeerConnection;
+    const rtc = new pc(config);
+
+    rtc.oniceconnectionstatechange = () => sftConnectionHandler(rtc, sftStatusHandler);
+
+    rtc.setRemoteDescription({type: "offer", sdp: sftMsg.sdp}).then(() => {
+	rtc.createAnswer().then(answer => {
+	    rtc.setLocalDescription(answer)
+	})
+    });
+
+    return rtc;
+}
+
 
 function tcall_new(cfg, convid, userid, clientid, gatherh, candh, connectedh, errorh, statsh)
 {
@@ -486,4 +559,49 @@ function generateVideoTrack()
     const stream = canvas.captureStream(25);
     
     return stream.getVideoTracks();    
+}
+
+function tcall_sft(sftUrl, sftStatusHandler) {
+    const confconn = {
+	version: "3.0",
+	type: "CONFCONN",
+	sessid: 'jtest',
+	src_userid: 'jtest',
+	src_clientid: '_',
+	dest_userid: 'sft',
+	dest_clientid: '_',
+	resp: false,
+	transient: false,
+	tool: 'nw_test_tool',
+	toolver: '0.0.1',
+	status: 0,
+	selective_audio: true,
+	selective_video: true,
+	vstreams: 10
+    };
+
+    const convid = (Math.random() + 1).toString(36).substring(7);
+    const fullUrl = sftUrl + "/sft/" + convid;
+    const sft = {url: "", convid: convid };
+    console.log("SFT: req=", fullUrl);
+    fetch(fullUrl, {
+	method: 'POST',
+	body: JSON.stringify(confconn), // data can be `string` or {object}!
+	headers:{
+	    'Content-Type': 'application/json'
+	}})
+	.then((resp) => {
+	    console.log("SFT says: ", resp);
+	    if (resp.ok) {
+		resp.json().then(sftMsg => {
+			console.log("OFFER: ", sftMsg);
+			if (sftMsg.type === 'SETUP')
+			    pc_CreateSft(convid, sftMsg, sftStatusHandler);
+		    });
+	    }
+	    else {
+		const error = resp.status.toString() + ' ' + resp.statusText;
+		console.log('req failed:', error);
+	    }
+	});
 }
