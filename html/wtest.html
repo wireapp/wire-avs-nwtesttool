@@ -598,8 +598,10 @@
 				tr.appendChild(sftTd);
 
 				if (connectionState === 'connected') {
-					sftTd.textContent = 'OK';
-					sftTd.style.backgroundColor = 'rgb(0, 197, 0)';
+					setTimeout(() => {
+						sftTd.textContent = 'OK';
+						sftTd.style.backgroundColor = 'rgb(0, 197, 0)';
+					}, 2000);
 				}
 
 				tb.appendChild(tr);
