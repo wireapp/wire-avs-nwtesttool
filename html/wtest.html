@@ -519,6 +519,12 @@
 
 			function sftStatusHandler(connState) {
 				console.log('SFT status=', connState);
+				if (connState === 'connected') {
+					setTimeout(() => {
+						sftTd.textContent = 'OK';
+						sftTd.style.backgroundColor = 'rgb(0, 197, 0)';
+					}, 2000);
+				}
 			}
 
 			function doStart() {
@@ -596,13 +602,6 @@
 				sftTd.textContent = 'NOT OK';
 				sftTd.style.backgroundColor = 'rgb(197, 0, 0)';
 				tr.appendChild(sftTd);
-
-				if (connState === 'connected') {
-					setTimeout(() => {
-						sftTd.textContent = 'OK';
-						sftTd.style.backgroundColor = 'rgb(0, 197, 0)';
-					}, 2000);
-				}
 
 				tb.appendChild(tr);
 				tb.setAttribute('id', 'infoTable');
