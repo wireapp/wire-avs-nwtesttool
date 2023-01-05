@@ -3,8 +3,9 @@
 The Audio/Video/Signalling network testing tool for Wire.
 
 This tool provides a browser interface to see which TURN/restund servers (the servers used when making audio/video calls using Wire) are being used by Wire clients, and whether any problems exist related to:
-* connecting from your device to the restund/TURN servers
-* network bandwith with respect to establishing connections (how many people can be in the same call with you from your perspective)
+
+-   connecting from your device to the restund/TURN servers
+-   network bandwith with respect to establishing connections (how many people can be in the same call with you from your perspective)
 
 The information gathered can be helpful to debug networking, firewall, and configuration issues.
 
@@ -54,7 +55,7 @@ Follow the instructions in the Makefile to build and push docker images to quay.
 0. Ensure you have access to quay.io (`docker login quay.io`)
 1. Change the version in the Makefile
 2. Run `make docker-push-image`, this also changes the respective JSON file under deploy/, ensure to commit it afterwards too.
-3. Follow the procedure in the backend-wiki for deployment.
+3. Follow the procedure in the [backend-wiki](https://wearezeta.atlassian.net/wiki/spaces/BAC/pages/709361761/AVS+nwtesttool+deployment) for deployment.
 
 TODO: automate this on CI.
 
