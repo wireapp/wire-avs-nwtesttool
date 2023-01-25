@@ -28,11 +28,11 @@
 # Remove images (only for cleanup)
 #
 # docker image rm nwtesttool
-# docker image rm nginx:1.17.9-alpine-perl
+# docker image rm nginx:1.23.3-alpine-perl
 #
 
 # Parent image
-FROM nginx:1.17.9-alpine-perl
+FROM nginx:1.23.3-alpine-perl
 
 # Set the working directory
 WORKDIR ./usr/share/nginx/html/

@@ -1,11 +1,11 @@
 SHELL            := /usr/bin/env bash
 LANG             := en_US.UTF-8
 DOCKER_USER      ?= quay.io/wire
-DOCKER_TAG       ?= 1.0.14
+DOCKER_TAG       ?= 1.0.15-5
 
 .PHONY: docker-build-image
 docker-build-image:
-	docker build . -t $(DOCKER_USER)/avs-nwtesttool:$(DOCKER_TAG)
+	docker buildx build --platform linux/amd64 . -t $(DOCKER_USER)/avs-nwtesttool:$(DOCKER_TAG)
 
 .PHONY: docker-push-image
 docker-push-image: docker-build-image
