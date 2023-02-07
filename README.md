@@ -56,6 +56,7 @@ Follow the instructions in the Makefile to build and push docker images to quay.
 1. Change the version in the Makefile
 2. Run `make docker-push-image`, this also changes the respective JSON file under deploy/, ensure to commit it afterwards too.
 3. Follow the procedure in the [backend-wiki](https://wearezeta.atlassian.net/wiki/spaces/BAC/pages/709361761/AVS+nwtesttool+deployment) for deployment.
+4. Copy the Dockerrun.aws.json file from /deploy and upload it on aws.
 
 TODO: automate this on CI.
 
