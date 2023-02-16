@@ -1,0 +1,92 @@
+name: Test, Build & Deploy
+
+on:
+    push:
+        branches: [master]
+        tags:
+            - v*
+
+jobs:
+    test_build_deploy:
+        runs-on: ubuntu-latest
+
+        env:
+            TEST_COVERAGE_FAIL_THRESHOLD: 65
+            TEST_COVERAGE_WARNING_THRESHOLD: 66
+            DEPLOYMENT_RECOVERY_TIMEOUT_SECONDS: 150
+            AWS_APPLICATION_NAME: AVSCallingTestTool
+            AWS_BUILD_JSON: 'deploy/Dockerrun.aws.json'
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Set environment variables
+              run: |
+                  echo "BRANCH_NAME=$(git branch --show-current)" >> $GITHUB_ENV
+                  echo "TAG=$(git tag --points-at ${{github.sha}})" >> $GITHUB_ENV
+                  echo "COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{github.event.after}} | head -n 1)" >> $GITHUB_ENV
+                  echo "DISTRIBUTION=${DISTRIBUTION/distribution-/}" >> $GITHUB_ENV
+
+            - name: Set TITLE
+              env:
+                  PR_TITLE: ${{github.event.pull_request.title || env.COMMIT_MESSAGE}}
+              run: echo "TITLE=$PR_TITLE" >> $GITHUB_ENV
+
+            - name: Print environment variables
+              env:
+                  GITHUB_CONTEXT: ${{toJson(github)}}
+              run: |
+                  echo -e "BRANCH_NAME = ${BRANCH_NAME}"
+                  echo -e "TAG = ${TAG}"
+                  echo -e "TITLE = ${TITLE}"
+                  echo -e "COMMIT_MESSAGE = ${COMMIT_MESSAGE}"
+                  echo -e "GITHUB_CONTEXT = ${GITHUB_CONTEXT}"
+
+            - name: Skip CI
+              if: contains(env.TITLE || env.COMMIT_MESSAGE, '[skip ci]') || contains(env.TITLE || env.COMMIT_MESSAGE, '[ci skip]')
+              uses: andymckay/cancel-action@0.3
+
+            - name: Cancel Previous Runs
+              uses: styfle/cancel-workflow-action@0.11.0
+              with:
+                  access_token: ${{github.token}}
+
+            - name: Authenticate git clone
+              env:
+                  GH_TOKEN: ${{secrets.OTTO_THE_BOT_GH_TOKEN}}
+              run: echo -e "machine github.com\n  login ${GH_TOKEN}" > ~/.netrc
+
+            - name: Build master
+              if: ${{env.BRANCH_NAME == 'master'}}
+              run: make docker-push-image
+
+            - name: Deploy prod build to Elastic Beanstalk
+              if: env.BRANCH_NAME == 'master'
+              uses: einaregilsson/beanstalk-deploy@v21
+              with:
+                  aws_access_key: ${{secrets.WEBTEAM_AWS_ACCESS_KEY_ID}}
+                  aws_secret_key: ${{secrets.WEBTEAM_AWS_SECRET_ACCESS_KEY}}
+                  application_name: ${{env.AWS_APPLICATION_NAME}}
+                  environment_name: wire-calling-testtool-prod
+                  region: eu-central-1
+                  deployment_package: ${{env.AWS_BUILD_JSON}}
+                  wait_for_deployment: false
+                  wait_for_environment_recovery: ${{env.DEPLOYMENT_RECOVERY_TIMEOUT_SECONDS}}
+                  version_label: ${{github.run_id}}
+                  version_description: ${{github.sha}}
+
+            - name: Deploy staging build to Elastic Beanstalk
+              if: env.BRANCH_NAME == 'master'
+              uses: einaregilsson/beanstalk-deploy@v21
+              with:
+                  aws_access_key: ${{secrets.WEBTEAM_AWS_ACCESS_KEY_ID}}
+                  aws_secret_key: ${{secrets.WEBTEAM_AWS_SECRET_ACCESS_KEY}}
+                  application_name: ${{env.AWS_APPLICATION_NAME}}
+                  environment_name: wire-calling-testtool-staging
+                  region: eu-central-1
+                  deployment_package: ${{env.AWS_BUILD_JSON}}
+                  wait_for_deployment: false
+                  wait_for_environment_recovery: ${{env.DEPLOYMENT_RECOVERY_TIMEOUT_SECONDS}}
+                  version_label: ${{github.run_id}}
+                  version_description: ${{github.sha}}
