@@ -32,7 +32,7 @@
 #
 
 # Parent image
-FROM nginx:1.23.3-alpine-perl
+FROM nginx:1.23.3-alpine
 
 # Set the working directory
 WORKDIR ./usr/share/nginx/html/
@@ -43,7 +43,14 @@ COPY ./js/ /usr/share/nginx/html/js/
 
 # Copy an nginx config to set our main page as the index
 # Using 'ADD' instead of 'COPY' invalidates the cache
-ADD nginx.conf /etc/nginx/nginx.conf
+ADD nginx /etc/nginx
+
+# only replace variables with the following prefixes
+ENV NGINX_ENVSUBST_FILTER="BACKEND_HTTPS_"
+
+# set default values for wire staging environment
+ENV BACKEND_HTTPS_SFT=*.sft.staging.zinfra.io
+ENV BACKEND_HTTPS_URL=staging-nginz-https.zinfra.io
 
 # Make port available to the world outside this container
 EXPOSE 8080
