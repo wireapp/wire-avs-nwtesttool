@@ -4,18 +4,19 @@ The Audio/Video/Signalling network testing tool for Wire.
 
 This tool provides a browser interface to see which TURN/restund servers (the servers used when making audio/video calls using Wire) are being used by Wire clients, and whether any problems exist related to:
 
--   connecting from your device to the restund/TURN servers
--   network bandwith with respect to establishing connections (how many people can be in the same call with you from your perspective)
+- connecting from your device to the restund/TURN servers
+- network bandwith with respect to establishing connections (how many people can be in the same call with you from your perspective)
 
 The information gathered can be helpful to debug networking, firewall, and configuration issues.
 
 ## Configuration
 
-The environment variable `BACKEND_HTTPS_URL` must be set to point to a wire backend.
+The environment variable `BACKEND_HTTPS_URL` must be set to point to a wire backend and `BACKEND_HTTPS_SFT` must to be set to allow direct communication to the SFT servers.
 
 ```sh
 # example, adjust as needed
 export BACKEND_HTTPS_URL=nginz-https.example.com
+export BACKEND_HTTPS_SFT=\*.sft.example.com
 ```
 
 ## Running the tool

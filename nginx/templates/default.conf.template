@@ -1,0 +1,17 @@
+server {
+    listen 8080;
+
+    # route used in wire-server-deploy behind nginz
+    rewrite ^/calling-test$ / last;
+
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src data:; connect-src ${BACKEND_HTTPS_URL} ${BACKEND_HTTPS_SFT};" always;
+
+    location / {
+        root /usr/share/nginx/html;
+        index html/wtest.html;
+    }
+    location /js/config.js {
+        default_type text/javascript;
+        return 200 "window.backendHttpsUrl = \"https://${BACKEND_HTTPS_URL}\";\n";
+    }
+}
