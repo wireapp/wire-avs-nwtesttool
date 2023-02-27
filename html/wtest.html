@@ -210,8 +210,6 @@
       function loginClick() {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-		// clear login password in form
-		document.getElementById('password').value = "";
 
         login("hide");
         backendLogin(username, password);
