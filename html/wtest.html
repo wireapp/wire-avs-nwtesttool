@@ -238,7 +238,8 @@
           restartb.style.backgroundColor = "rgb(0, 197, 0)";
           restartb.disabled = false;
         } else {
-          (callset.is_running = true), (candUl.innerHTML = "");
+          callset.is_running = true;
+          candUl.innerHTML = "";
           restartb.textContent = "STOP";
           restartb.style.backgroundColor = "rgb(197, 0, 0)";
           doStart();
