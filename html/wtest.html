@@ -618,7 +618,8 @@
 
         const label = document.createElement("label");
         label.setAttribute("for", "enableLog");
-        label.textContent = "By checking this box, I confirm that I understand that the log file contains potentially sensitive data like IP addresses";
+        label.textContent =
+          "By checking this box, I confirm that I understand that the log file contains potentially sensitive data like IP addresses";
 
         document.body.appendChild(logb);
         document.body.appendChild(label);
@@ -627,12 +628,12 @@
         checkbox.addEventListener("change", function () {
           if (this.checked) {
             logb.removeAttribute("disabled");
-            logb.style.opacity = 1;
-            logb.style.cursor = "pointer";
+            logb.style.setProperty("opacity", "1");
+            logb.style.setProperty("cursor", "pointer");
           } else {
             logb.setAttribute("disabled", true);
-            logb.style.opacity = 0.5;
-            logb.style.cursor = "not-allowed";
+            logb.style.setProperty("opacity", "0.5");
+            logb.style.setProperty("cursor", "not-allowed");
           }
         });
       }
