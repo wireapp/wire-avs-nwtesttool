@@ -489,7 +489,14 @@ function tcall_stats(tcall) {
 					//console.log('inbound-rtp: ', stat);
 					const ploss = stat.packetsLost;
 					tcall.stats.ploss = ploss - tcall.stats.lastploss;
+					tcall.stats.lastploss = ploss;
+					
+					// console.log('userid=' + tcall.userid +  ' tcallStats: ploss=' + ploss
+					// + " tcall-ploss=" + tcall.stats.ploss
+					// + " tcall-lastploss=" + tcall.stats.lastploss);
 
+					
+					
 					const b = stat.bytesReceived;
 					tcall.stats.bytes = Math.round(
 						(b - tcall.stats.lastbytes) / 1024

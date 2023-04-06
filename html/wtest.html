@@ -82,15 +82,34 @@
       }
 
       #restartBtn {
+        position: relative;
+        width: 50px;
+        height: 30px;
+        border-radius: 15px;
         background-color: rgb(197, 0, 0);
-        border-radius: 8px;
-        color: rgb(255, 255, 255);
-        width: 20%;
-        margin: auto;
-        margin-top: 20px;
-        display: block;
-        padding: 5px;
-        justify-content: center;
+        margin: 20px auto;
+        cursor: pointer;
+      }
+
+      #restartBtn::before {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #fff;
+        left: 4px;
+        transition: all 0.3s ease;
+      }
+
+      #restartBtn.on {
+        background-color: rgb(0, 197, 0);
+      }
+
+      #restartBtn.on::before {
+        left: 24px;
       }
 
       #username {
@@ -142,8 +161,7 @@
         outline: none;
         padding: 0px 16px 0px 8px;
       }
-
-      #loginBtn {
+      #forgotpw #loginBtn {
         color: rgb(255, 255, 255);
         font-weight: 600;
         font-size: 14px;
@@ -209,17 +227,35 @@
         } else if (showhide == "hide") {
           document.getElementById("popupbox").style.visibility = "hidden";
         }
+        const forgotPasswordLink = document.createElement("a");
+        forgotPasswordLink.href = "https://account.wire.com/forgot/";
+        forgotPasswordLink.innerText = "Forgot password?";
+        document.getElementById("popupbox").appendChild(forgotPasswordLink);
       }
 
       function loginClick() {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
+        const forgotPasswordLink = document.createElement("a");
+
         // clear login password in form
         document.getElementById("password").value = "";
 
         login("hide");
         backendLogin(username, password);
       }
+
+      function logout() {
+        backendLogout();
+        window.location.href = "https://wire-calling-testtool.wire.com/";
+      }
+
+      const logoutButton = document.createElement("button");
+      logoutButton.classList.add("logout-button");
+      logoutButton.innerText = "Log Out";
+      logoutButton.onclick = logout;
+
+      document.body.appendChild(logoutButton);
 
       function stopAllCalls() {
         for (const tcall of callset.tcalls) {
@@ -235,17 +271,13 @@
         console.log("restartClick");
         if (callset.is_running) {
           callset.is_running = false;
-          restartb.disabled = true;
           if (statsInterval) clearInterval(statsInterval);
           stopAllCalls();
-          restartb.textContent = "START";
-          restartb.style.backgroundColor = "rgb(0, 197, 0)";
-          restartb.disabled = false;
+          restartb.classList.remove("on");
         } else {
           callset.is_running = true;
           candUl.innerHTML = "";
-          restartb.textContent = "STOP";
-          restartb.style.backgroundColor = "rgb(197, 0, 0)";
+          restartb.classList.add("on");
           doStart();
         }
       }
@@ -368,6 +400,8 @@
           ploss += tcall.stats.ploss;
           jitter += tcall.stats.jitter;
         }
+        //measure Ploss packets
+
         callset.ploss = Math.round((ploss / pkts) * 10000.0) / 100;
         if (!isNaN(callset.ploss)) {
           const pf = PCOEFF * callset.ploss + (1.0 - PCOEFF) * callset.pf;
@@ -379,12 +413,12 @@
           callset.jitter = 0;
         }
 
-        rows[0].cells[1].textContent = callset.nconns.toString();
-        rows[0].cells[2].textContent = bw.toString();
-        rows[0].cells[3].textContent = pkts.toString();
-        rows[0].cells[4].textContent = callset.pf.toString();
-        rows[0].cells[5].textContent = callset.jitter.toString();
-        rows[0].cells[6].textContent = callset.SFT.toString();
+        rows[0].cells[1].textContent = callset.nconns?.toString();
+        rows[0].cells[2].textContent = bw?.toString();
+        rows[0].cells[3].textContent = pkts?.toString();
+        rows[0].cells[4].textContent = callset.pf?.toString();
+        rows[0].cells[5].textContent = callset.jitter?.toString();
+        rows[0].cells[6].textContent = callset.SFT?.toString();
       }
 
       function gather_answer_handler(tcall, sdp) {
@@ -411,7 +445,8 @@
         if (!callset.is_running || callset.nconns > 0) return;
 
         const li = document.createElement("li");
-        li.textContent = "Cand[userid=" + tcall.userid + "]=" + cand.toString();
+        li.textContent =
+          "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
         candUl.appendChild(li);
       }
 
@@ -450,7 +485,7 @@
       }
 
       function createCall(offer) {
-        const userid = callset.tcalls.length.toString();
+        const userid = callset.tcalls.length?.toString();
         const tcall = tcall_new(
           wconfig,
           "1",
@@ -526,8 +561,8 @@
         statsInterval = setInterval(() => {
           for (const tcall of callset.tcalls) {
             tcall_stats(tcall);
-            update_stats();
           }
+          update_stats();
         }, 1000);
         callset.nattempts = 1;
         newCall();
@@ -604,10 +639,9 @@
 
         document.body.appendChild(tb);
 
-        const restartb = document.createElement("button");
+        const restartb = document.createElement("div");
         restartb.setAttribute("id", "restartBtn");
-        restartb.setAttribute("onclick", "restartClick();");
-        restartb.textContent = "STOP";
+        restartb.addEventListener("click", restartClick);
         document.body.appendChild(restartb);
 
         const checkbox = document.createElement("input");
@@ -622,7 +656,8 @@
 
         const label = document.createElement("label");
         label.setAttribute("for", "enableLog");
-        label.textContent = "By checking this box, I confirm that I understand that the log file contains potentially sensitive data like IP addresses";
+        label.textContent =
+          "By checking this box, I confirm that I understand that the log file contains potentially sensitive data like IP addresses";
 
         document.body.appendChild(logb);
         document.body.appendChild(label);
