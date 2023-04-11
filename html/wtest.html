@@ -222,11 +222,12 @@
     </style>
     <script language="JavaScript" type="text/javascript">
       function login(showhide) {
-        if (showhide == "show") {
+        if (showhide === "show") {
           document.getElementById("popupbox").style.visibility = "visible";
-        } else if (showhide == "hide") {
+        } else if (showhide === "hide") {
           document.getElementById("popupbox").style.visibility = "hidden";
         }
+
         const forgotPasswordLink = document.createElement("a");
         forgotPasswordLink.href = "https://account.wire.com/forgot/";
         forgotPasswordLink.innerText = "Forgot password?";
@@ -236,26 +237,13 @@
       function loginClick() {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-        const forgotPasswordLink = document.createElement("a");
 
-        // clear login password in form
+        // Clear login password in form
         document.getElementById("password").value = "";
 
         login("hide");
         backendLogin(username, password);
       }
-
-      function logout() {
-        backendLogout();
-        window.location.href = "https://wire-calling-testtool.wire.com/";
-      }
-
-      const logoutButton = document.createElement("button");
-      logoutButton.classList.add("logout-button");
-      logoutButton.innerText = "Log Out";
-      logoutButton.onclick = logout;
-
-      document.body.appendChild(logoutButton);
 
       function stopAllCalls() {
         for (const tcall of callset.tcalls) {
@@ -267,17 +255,22 @@
       }
 
       function restartClick() {
-        const restartb = document.getElementById("restartBtn");
+        const restartButton = document.getElementById("restartBtn");
         console.log("restartClick");
+
         if (callset.is_running) {
           callset.is_running = false;
-          if (statsInterval) clearInterval(statsInterval);
+
+          if (statsInterval) {
+            clearInterval(statsInterval);
+          }
+
           stopAllCalls();
-          restartb.classList.remove("on");
+          restartButton.classList.remove("on");
         } else {
           callset.is_running = true;
           candUl.innerHTML = "";
-          restartb.classList.add("on");
+          restartButton.classList.add("on");
           doStart();
         }
       }
