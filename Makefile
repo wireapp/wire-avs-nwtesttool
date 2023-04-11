@@ -1,7 +1,7 @@
 SHELL            := /usr/bin/env bash
 LANG             := en_US.UTF-8
 DOCKER_USER      ?= quay.io/wire
-DOCKER_TAG       ?= 1.0.16-1
+DOCKER_TAG       ?= 1.0.17
 
 .PHONY: docker-build-image
 docker-build-image:
