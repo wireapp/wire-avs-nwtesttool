@@ -195,6 +195,21 @@
         margin: 0px -10px 0px 0px;
       }
 
+      .logout-button {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
       .flex_input {
         box-shadow: none;
         caret-color: rgb(35, 145, 211);
@@ -221,6 +236,19 @@
       }
     </style>
     <script language="JavaScript" type="text/javascript">
+      function login(showhide) {
+        if (showhide === "show") {
+          document.getElementById("popupbox").style.visibility = "visible";
+        } else if (showhide === "hide") {
+          document.getElementById("popupbox").style.visibility = "hidden";
+        }
+
+        const forgotPasswordLink = document.createElement("a");
+        forgotPasswordLink.href = "https://account.wire.com/forgot/";
+        forgotPasswordLink.innerText = "Forgot password?";
+        document.getElementById("popupbox").appendChild(forgotPasswordLink);
+      }
+
       function login(showhide) {
         if (showhide === "show") {
           document.getElementById("popupbox").style.visibility = "visible";
@@ -379,6 +407,12 @@
         if (!callset.is_running) {
           return;
         }
+
+        const logoutButton = document.createElement("button");
+        logoutButton.classList.add("logout-button");
+        logoutButton.innerText = "Log Out";
+        logoutButton.onclick = logout;
+        document.body.appendChild(logoutButton);
 
         const tb = document.getElementById("infoTable");
         const rows = tb.rows;
@@ -549,6 +583,13 @@
           }, 2000);
         }
       }
+
+      function logout() {
+        window.location.href = "https://wire-calling-testtool.wire.com/";
+      }
+
+      const logoutBtn = document.getElementById("logout-btn");
+      logoutBtn.addEventListener("click", logout);
 
       function doStart() {
         statsInterval = setInterval(() => {
