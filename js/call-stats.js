@@ -28,6 +28,12 @@ function update_stats() {
     return;
   }
 
+  const logoutButton = document.createElement("button");
+  logoutButton.classList.add("logout-button");
+  logoutButton.innerText = "Log Out";
+  logoutButton.onclick = logout;
+  document.body.appendChild(logoutButton);
+
   const tb = document.getElementById("infoTable");
   const rows = tb.rows;
 
@@ -192,6 +198,13 @@ function sftStatusHandler(connState) {
     }, 2000);
   }
 }
+
+function logout() {
+  window.location.href = "https://wire-calling-testtool.wire.com/";
+}
+
+const logoutBtn = document.getElementById("logout-btn");
+logoutBtn.addEventListener("click", logout);
 
 function doStart() {
   statsInterval = setInterval(() => {

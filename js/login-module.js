@@ -32,10 +32,10 @@ function login(showhide) {
     document.querySelector(".main-container").style.visibility = "hidden";
   }
 
-  const forgotPasswordLink = document.createElement("a");
-  forgotPasswordLink.href = "https://account.wire.com/forgot/";
-  forgotPasswordLink.innerText = "Forgot password?";
-  document.querySelector(".main-container").appendChild(forgotPasswordLink);
+  // const forgotPasswordLink = document.createElement("a");
+  // forgotPasswordLink.href = "https://account.wire.com/forgot/";
+  // forgotPasswordLink.innerText = "Forgot password?";
+  // document.querySelector(".main-container").appendChild(forgotPasswordLink);
 }
 
 function loginClick() {
@@ -45,7 +45,7 @@ function loginClick() {
   // Clear login password in form
   document.getElementById("password").value = "";
 
-  login("hide");
+  // login("hide");
   backendLogin(username, password);
 }
 
