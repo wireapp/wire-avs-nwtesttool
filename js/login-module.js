@@ -27,15 +27,15 @@ function validateInputs() {
 
 function login(showhide) {
   if (showhide === "show") {
-    document.getElementById("popupbox").style.visibility = "visible";
+    document.querySelector(".main-container").style.visibility = "visible";
   } else if (showhide === "hide") {
-    document.getElementById("popupbox").style.visibility = "hidden";
+    document.querySelector(".main-container").style.visibility = "hidden";
   }
 
   const forgotPasswordLink = document.createElement("a");
   forgotPasswordLink.href = "https://account.wire.com/forgot/";
   forgotPasswordLink.innerText = "Forgot password?";
-  document.getElementById("popupbox").appendChild(forgotPasswordLink);
+  document.querySelector(".main-container").appendChild(forgotPasswordLink);
 }
 
 function loginClick() {
@@ -80,7 +80,11 @@ function restartClick() {
 }
 
 //Attach event listeners
+
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const togglePassword = document.querySelector("#togglePassword");
+
 usernameInput.addEventListener("input", validateInputs);
 passwordInput.addEventListener("input", validateInputs);
-
 togglePassword.addEventListener("change", showPassword);
