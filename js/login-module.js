@@ -23,19 +23,12 @@ function validateInputs() {
   }
 }
 
-//////////////////////////////////////////
-
 function login(showhide) {
   if (showhide === "show") {
     document.querySelector(".main-container").style.visibility = "visible";
   } else if (showhide === "hide") {
     document.querySelector(".main-container").style.visibility = "hidden";
   }
-
-  // const forgotPasswordLink = document.createElement("a");
-  // forgotPasswordLink.href = "https://account.wire.com/forgot/";
-  // forgotPasswordLink.innerText = "Forgot password?";
-  // document.querySelector(".main-container").appendChild(forgotPasswordLink);
 }
 
 function loginClick() {
@@ -45,38 +38,8 @@ function loginClick() {
   // Clear login password in form
   document.getElementById("password").value = "";
 
-  // login("hide");
+  login("hide");
   backendLogin(username, password);
-}
-
-function stopAllCalls() {
-  for (const tcall of callset.tcalls) {
-    tcall_close(tcall);
-  }
-  callset.nconns = 0;
-  callset.nattempts = 0;
-  callset.tcalls = [];
-}
-
-function restartClick() {
-  const restartButton = document.getElementById("restartBtn");
-  console.log("restartClick");
-
-  if (callset.is_running) {
-    callset.is_running = false;
-
-    if (statsInterval) {
-      clearInterval(statsInterval);
-    }
-
-    stopAllCalls();
-    restartButton.classList.remove("on");
-  } else {
-    callset.is_running = true;
-    candUl.innerHTML = "";
-    restartButton.classList.add("on");
-    doStart();
-  }
 }
 
 //Attach event listeners

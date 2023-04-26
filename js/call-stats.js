@@ -19,6 +19,36 @@ const callset = {
 let wconfig;
 let candUl;
 
+function stopAllCalls() {
+  for (const tcall of callset.tcalls) {
+    tcall_close(tcall);
+  }
+  callset.nconns = 0;
+  callset.nattempts = 0;
+  callset.tcalls = [];
+}
+
+function restartClick() {
+  const restartButton = document.getElementById("restartBtn");
+  console.log("restartClick");
+
+  if (callset.is_running) {
+    callset.is_running = false;
+
+    if (statsInterval) {
+      clearInterval(statsInterval);
+    }
+
+    stopAllCalls();
+    restartButton.classList.remove("on");
+  } else {
+    callset.is_running = true;
+    candUl.innerHTML = "";
+    restartButton.classList.add("on");
+    doStart();
+  }
+}
+
 function backendLogin(username, password) {
   wlogin(backendUrl, username, password, loginSuccess, loginError);
 }
