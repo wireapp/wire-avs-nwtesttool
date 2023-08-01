@@ -1,3 +1,4 @@
+console.log(window.backendHttpsUrl);
 function wlogin(backendUrl, username, password, worker, errHandler) {
   const data = {
     email: username,

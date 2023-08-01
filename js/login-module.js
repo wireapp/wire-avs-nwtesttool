@@ -1,3 +1,4 @@
+let backendUrl = "https://staging-nginz-https.zinfra.io";
 function showPassword() {
   const togglePassword = document.querySelector("#togglePassword");
   const password = document.querySelector("#password");
@@ -40,6 +41,53 @@ function loginClick() {
 
   login("hide");
   backendLogin(username, password);
+}
+
+function backendLogin(username, password) {
+  wlogin(backendUrl, username, password, loginSuccess, loginError);
+}
+
+function loginSuccess(wcfg) {
+  window.location.href = "report.html";
+  /*const ul = document.createElement("ul");
+
+  const turns = wcfg.ice_servers;
+  for (const turn of turns) {
+    const turl = turn.urls[0];
+    const li = document.createElement("li");
+    li.textContent = turl;
+    ul.appendChild(li);
+  }
+  const sfts = wcfg.sft_servers;
+  console.log("SFTS=" + JSON.stringify(sfts));
+  if (sfts.length > 0) tcall_sft(sfts[0].urls[0], sftStatusHandler);
+
+  const h3 = document.createElement("h3");
+
+  h3.textContent = "Configured TURN server(s):";
+  document.body.appendChild(h3);
+  document.body.appendChild(ul);
+
+  const h3a = document.createElement("h3");
+  h3a.textContent = "Gathering candidates...";
+  document.body.appendChild(h3a);
+
+  candUl = document.createElement("ul");
+  document.body.appendChild(candUl);
+
+  wconfig = wcfg;
+
+  doStart();*/
+}
+
+function loginError(error) {
+  //const errorMsgDiv = document.getElementById("errorMsg");
+  //errorMsgDiv.textContent = "Login failed: " + error;
+
+  const h3 = document.createElement("h3");
+
+  h3.textContent = "Login failed: " + error;
+  document.body.appendChild(h3);
 }
 
 //Attach event listeners
