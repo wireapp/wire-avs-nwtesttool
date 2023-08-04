@@ -15,8 +15,92 @@
   </head>
 
   <body>
-    <div class="tool-title">
-      <h2>Calling test tool</h2>
+    <div class="main-container">
+      <div class="nav">
+        <div class="wire-full-logo">
+          <img src="../assets/wire-full-logo.svg" alt="Wire Logo" />
+        </div>
+        <div class="title-bar">
+          <h2>Calling test tool</h2>
+          <div class="toggle">
+            <h3>Collect data</h3>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="logout-space">
+          <button class="logout-button">Log Out</button>
+        </div>
+      </div>
+
+      <div class="diagnostic-container">
+        <div class="diagnostic-tool">
+          <!--sft-status-->
+          <div class="sft-status">
+            <p>Media type: Audio</p>
+            <div class="ok-nok-field">
+              <p>asdasdsad</p>
+            </div>
+            <p class="description-small">
+              The indicatior is showing a green OK or a red NOK to determine the
+              connection state.<br />More info about SFT's can be found
+              <a href="https://docs.wire.com/understand/sft.html">here</a>.
+            </p>
+          </div>
+
+          <!--stats-->
+          <div class="call-stats">
+            <div class="diagnostic-element">
+              <p>Number</p>
+              <p class="number"></p>
+            </div>
+            <div class="diagnostic-element">
+              <p>Kbytes /s:</p>
+              <p class="kbytes"></p>
+            </div>
+            <div class="diagnostic-element">
+              <p>Packets /s:</p>
+              <p class="packets"></p>
+            </div>
+            <div class="diagnostic-element">
+              <p>Packets lost (%):</p>
+              <p class="packets-lost"></p>
+            </div>
+            <div class="diagnostic-element">
+              <p>Jitter (ms):</p>
+              <p class="jitter"></p>
+            </div>
+          </div>
+          <!--show-more-->
+          <div class="show-diagnostic-details">
+            <a>Show details</a>
+            <img src="../assets/" alt="Info" />
+          </div>
+        </div>
+        <div class="save-report">
+          <span class="description-main"
+            >Save a debug report to get more details about your calling
+            situation.<br /><br
+          /></span>
+          <input type="checkbox" />
+          <span class="checkbox-description"
+            >I understand that the report contains sensitive data like IP
+            addresses.</span
+          >
+          <button class="btn-save-report" disabled>Save Report</button>
+        </div>
+        <div class="send-report">
+          <span class="description-main"
+            >Submit a request to Wire Support and attach your debug report.
+            <br /><br />
+            We will reach out to you!</span
+          >
+          <button class="btn-send-report">Send Report</button>
+          <!--www.support.wire.com/hc/en-us/requests/new-->
+        </div>
+      </div>
     </div>
 
     <script src="../js/call-stats.js"></script>
