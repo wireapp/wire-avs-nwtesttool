@@ -22,61 +22,114 @@
         </div>
         <div class="title-bar">
           <h2>Calling test tool</h2>
-          <div class="toggle">
-            <h3>Collect data</h3>
-            <label class="switch">
-              <input type="checkbox" />
-              <span class="slider"></span>
-            </label>
-          </div>
         </div>
         <div class="logout-space">
-          <button class="logout-button">Log Out</button>
+          <button id="logout-button" class="logout-button">Log Out</button>
         </div>
+      </div>
+
+      <div class="toggle">
+        <h3>Collect data</h3>
+        <label class="switch">
+          <input id="collect-data" type="checkbox" />
+          <span class="slider"></span>
+        </label>
       </div>
 
       <div class="diagnostic-container">
         <div class="diagnostic-tool">
           <!--sft-status-->
           <div class="sft-status">
-            <p>Media type: Audio</p>
-            <div class="ok-nok-field">
-              <p>asdasdsad</p>
+            <div class="sft-media"><h3>Media type: Audio</h3></div>
+            <div class="sft-status-frame">
+              <div class="ok-nok-field">
+                <span>Conference Calling (SFT) Status:</span>
+                <span class="status-indicator"></span>
+              </div>
+              <p class="description-small">
+                The indicatior is showing a green OK or a red NOK to determine
+                the connection state.<br />More info about SFT's can be found
+                <a
+                  class="hyperlink"
+                  target="_blank"
+                  href="https://docs.wire.com/understand/sft.html"
+                  >here</a
+                >.
+              </p>
             </div>
-            <p class="description-small">
-              The indicatior is showing a green OK or a red NOK to determine the
-              connection state.<br />More info about SFT's can be found
-              <a href="https://docs.wire.com/understand/sft.html">here</a>.
-            </p>
           </div>
 
           <!--stats-->
           <div class="call-stats">
             <div class="diagnostic-element">
-              <p>Number</p>
-              <p class="number"></p>
+              <span>Number</span>
+              <span class="number">0</span>
             </div>
             <div class="diagnostic-element">
-              <p>Kbytes /s:</p>
-              <p class="kbytes"></p>
+              <span>Kbytes /s:</span>
+              <span class="kbytes">0</span>
             </div>
             <div class="diagnostic-element">
-              <p>Packets /s:</p>
-              <p class="packets"></p>
+              <span>Packets /s:</span>
+              <span class="packets">0</span>
             </div>
             <div class="diagnostic-element">
-              <p>Packets lost (%):</p>
-              <p class="packets-lost"></p>
+              <span>Packets lost (%):</span>
+              <span class="packets-lost">0</span>
             </div>
             <div class="diagnostic-element">
-              <p>Jitter (ms):</p>
-              <p class="jitter"></p>
+              <span>Jitter (ms):</span>
+              <span class="jitter">0</span>
             </div>
           </div>
+
+          <div
+            id="diagnostic-el-desc-container"
+            class="diagnostic-el-desc-container"
+          >
+            <p class="diagnostic-el-desc">
+              Number of calls started to test the connectivity.
+            </p>
+            <p class="diagnostic-el-desc">
+              Total number of bytes recieved for this
+              <a
+                class="hyperlink"
+                target="_blank"
+                href="https://www.w3.org/TR/webrtc-stats/#dfn-ssrc"
+                >SSRC</a
+              >.
+            </p>
+            <p class="diagnostic-el-desc">
+              Information is transported from your computer in data packets
+              across the internet.<br /><br />The longer data packets take to
+              arrive, the more jitter can negatively impact the video and audio
+              quality.
+            </p>
+            <div class="diagnostic-el-desc">
+              <p>
+                Packet loss refers to the failure of packets to reach their
+                destination on a network.
+              </p>
+              <ul class="bullet-point-list">
+                <li>BAD: packet loss > 20% or RTT > 800ms</li>
+                <li>MEDIUM: packet loss 5-20% or RTT 400-800ms</li>
+                <li>NORMAL: packet loss < 5% and RTT < 400ms</li>
+              </ul>
+            </div>
+            <p class="diagnostic-el-desc">
+              Jitter is when there is a time delay in sending data packets over
+              your network connection.<br /><br />An example of an acceptable
+              call is where jitter is below 30ms and packet loss is kept below
+              1%.
+            </p>
+          </div>
+
           <!--show-more-->
-          <div class="show-diagnostic-details">
-            <a>Show details</a>
-            <img src="../assets/" alt="Info" />
+          <div id="show-details" class="diagnostic-element-info">
+            <div class="show-details-container" onclick="handleShowDetails()">
+              <span>Show details</span>
+              <img src="../assets/info.svg" alt="Info" />
+            </div>
           </div>
         </div>
         <div class="save-report">
@@ -84,12 +137,14 @@
             >Save a debug report to get more details about your calling
             situation.<br /><br
           /></span>
-          <input type="checkbox" />
+          <input id="sensitive-data-validation" type="checkbox" />
           <span class="checkbox-description"
             >I understand that the report contains sensitive data like IP
             addresses.</span
           >
-          <button class="btn-save-report" disabled>Save Report</button>
+          <button id="btn-save-report" class="btn-save-report" disabled>
+            Save Report
+          </button>
         </div>
         <div class="send-report">
           <span class="description-main"
@@ -97,13 +152,29 @@
             <br /><br />
             We will reach out to you!</span
           >
-          <button class="btn-send-report">Send Report</button>
-          <!--www.support.wire.com/hc/en-us/requests/new-->
+          <button class="btn-send-report" id="send-report-button">
+            Send Report
+          </button>
+        </div>
+        <div class="diagnostic-details">
+          <div>
+            <h3>More details</h3>
+            <button class="extend-intent">
+              <img src="../assets/btn-expand.svg" alt="Extend" />
+            </button>
+            <button class="collaps-intent" hidden>
+              <img src="../assets/btn-collapse.svg" alt="Collapse" />
+            </button>
+          </div>
+          <div>
+            <span></span>
+          </div>
         </div>
       </div>
     </div>
 
     <script src="../js/call-stats.js"></script>
     <script src="../js/testcall.js"></script>
+    <script src="../js/diagnostic-tool.js"></script>
   </body>
 </html>

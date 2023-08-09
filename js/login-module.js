@@ -1,4 +1,4 @@
-let backendUrl = "https://staging-nginz-https.zinfra.io";
+let backendUrl = window.backendHttpsUrl;
 function showPassword() {
   const togglePassword = document.querySelector("#togglePassword");
   const password = document.querySelector("#password");

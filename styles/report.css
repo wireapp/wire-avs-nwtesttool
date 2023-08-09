@@ -1,3 +1,15 @@
+h3 {
+  display: inline;
+}
+
+ul {
+  margin: 24px 0px;
+}
+
+.main-container {
+  padding-bottom: 56px;
+}
+
 .nav {
   display: flex;
   flex-direction: row;
@@ -17,7 +29,7 @@
   min-width: 154px;
   min-height: 90px;
   padding-top: 32px;
-  padding-left: 32px;
+  padding-left: 50px;
 }
 
 .logout-button {
@@ -26,7 +38,6 @@
   border: 1px solid #dce0e3;
   cursor: pointer;
   padding: 2px 12px;
-  transition: all 0.24s ease 0s;
   width: auto;
   background-color: white;
   border-radius: 12px;
@@ -35,18 +46,23 @@
 
 .logout-button:hover {
   background: #dce0e3;
+  transition: all 0.24s ease 0s;
   color: black;
   border: 1px solid #ccc;
 }
 
 .logout-button:active {
   color: #0667c8;
+  transition: all 0.24s ease 0s;
   background: #cde1f4;
   border: 1px solid #0667c8;
 }
 
 .toggle {
-  position: relative;
+  margin-top: -20px;
+  margin-bottom: 36px;
+  text-align: center;
+  justify-content: center;
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -54,7 +70,6 @@
 
 .switch {
   position: relative;
-  display: inline-block;
   width: 44px;
   height: 22px;
 }
@@ -74,7 +89,6 @@
   bottom: 0;
   border-radius: 34px;
   background-color: #ccc;
-  -webkit-transition: 0.4s;
   transition: 0.4s;
 }
 
@@ -107,6 +121,7 @@ input:checked + .slider:before {
   margin: auto;
   flex-wrap: wrap;
   max-width: 920px;
+  gap: 24px;
 }
 .diagnostic-container > * {
   border-radius: 8px;
@@ -120,13 +135,57 @@ input:checked + .slider:before {
 }
 
 .sft-status {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sft-media {
+  width: 162px;
+}
+
+.sft-status-frame {
+  flex-grow: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
 }
 
 .ok-nok-field {
   background-color: #4a935c;
+  height: 64px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #dce0e3;
 }
 
 .description-small {
+  color: #676b71;
+  margin-top: 8px;
+  padding: 0 4px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.hyperlink:link {
+  color: #676b71;
+  text-decoration: none;
+}
+
+.hyperlink:visited {
+  color: pink;
+  text-decoration: none;
+}
+
+.hyperlink:hover {
+  color: #0552a0;
+  text-decoration: underline;
+}
+
+.hyperlink:active {
+  color: #043e78;
+  text-decoration: underline;
 }
 
 .call-stats {
@@ -134,27 +193,71 @@ input:checked + .slider:before {
   justify-content: space-between;
   align-items: stretch;
   gap: 16px;
-  margin: 24px 0px;
-  width: 100%;
-  height: 64px;
+  margin-top: 12px;
 }
 
 .diagnostic-element {
+  width: 100%;
   border-radius: 4px;
   background-color: white;
   border: 1px solid #ccc;
-  padding: 8px;
+  padding: 4px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.show-diagnostic-details {
+.diagnostic-element span {
+  display: block;
+  margin: 4px;
+}
+
+.diagnostic-el-desc-container {
+  display: none;
+  justify-content: space-between;
+  gap: 16px;
+  color: #696c6e;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.diagnostic-el-desc {
+  width: 100%;
+  padding: 0 4px;
+}
+
+.diagnostic-element-info {
+  color: #676b71;
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+  margin-top: 24px;
+  border-radius: 8px;
+  padding-right: 4px;
+}
+
+.show-details-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.show-details-container:hover {
+  color: black;
+  cursor: pointer;
+}
+
+.bullet-point-list {
+  padding: 0 8px 0 20px;
+  margin: -10px 0;
 }
 
 .save-report,
 .send-report {
-  flex-basis: 50%;
-  gap: calc(50% / 0.75);
   text-align: left;
   padding: 24px;
+  width: calc(50% - 12px);
 }
 
 .description-main {
@@ -174,6 +277,7 @@ input:checked + .slider:before {
 }
 
 .btn-save-report {
+  color: #fff;
   width: 404px;
   height: 48px;
   margin-top: 25px;
@@ -204,7 +308,6 @@ input:checked + .slider:before {
 
 .btn-save-report:hover:enabled {
   background: #0552a0;
-  color: #fff;
   outline: none;
   cursor: pointer;
 }
@@ -224,17 +327,34 @@ input:checked + .slider:before {
   line-height: 24px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.24s ease 0s;
 }
 
 .btn-send-report:hover {
   background: #dce0e3;
   color: black;
   border: 1px solid #ccc;
+  transition: all 0.24s ease 0s;
 }
 
 .btn-send-report:active {
   color: #0667c8;
   background: #cde1f4;
   border: 1px solid #0667c8;
+  transition: all 0.24s ease 0s;
+}
+
+.diagnostic-details {
+  flex-basis: 100%;
+  padding: 16px 24px;
+  cursor: pointer;
+}
+
+.diagnostic-details:hover {
+  background-color: #f6f6f6;
+}
+
+.extend-intent,
+.collaps-intent {
+  border: none;
+  background-color: transparent;
 }
