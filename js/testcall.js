@@ -28,8 +28,6 @@ function sdpMap(sdp) {
       const auline = melems.slice(0, 3);
 
       outline = auline.join(" ") + " " + "0";
-
-      console.log("outline=" + outline);
     } else if (sdpLine.startsWith("a=rtpmap:")) {
       const melems = sdpLine.split(" ");
       const rtpmap = melems[0].split(":");
@@ -49,7 +47,7 @@ function sdpMap(sdp) {
 }
 
 function doLog(msg) {
-  console.log(msg);
+  // console.log(msg);
 }
 
 function saveLog() {
@@ -150,6 +148,7 @@ function connectionHandler(tcall) {
   const state = rtc.iceConnectionState;
 
   doLog("connectionHandler: userid=" + tcall.userid + " state=" + state);
+  sftStatusHandler(state);
   if (state === "connected") {
     if (tcall.connectedh) tcall.connectedh(tcall);
   }
@@ -200,8 +199,6 @@ function signallingHandler(tcall) {
 }
 
 function pc_Create(tcall) {
-  console.log("pc_Create:", tcall);
-
   const config = {
     bundlePolicy: "max-bundle",
     iceServers: tcall.turn_servers.ice_servers,
@@ -249,8 +246,6 @@ function pc_Create(tcall) {
 }
 
 function sftResponse(url, sdp) {
-  console.log("sftResponse: sdp=", sdp);
-
   const setup = {
     version: "3.0",
     type: "SETUP",
@@ -272,21 +267,15 @@ function sftResponse(url, sdp) {
       "Content-Type": "application/json",
     },
   }).then((resp) => {
-    console.log("SFT says: ", resp);
     if (resp.ok) {
-      resp.json().then((sftMsg) => {
-        console.log("ANSWER: ", sftMsg);
-      });
+      resp.json().then((sftMsg) => {});
     } else {
       const error = resp.status.toString() + " " + resp.statusText;
-      console.log("req failed:", error);
     }
   });
 }
 
 function pc_CreateSft(convid, sftMsg, sftStatusHandler) {
-  console.log("pc_CreateSft:");
-
   const config = {
     bundlePolicy: "max-bundle",
     rtcpMuxPolicy: "require",
@@ -358,9 +347,7 @@ function tcall_start(tcall, convid, userid) {
   addMedia(rtc);
 
   rtc.createOffer().then((sdp) => {
-    console.log("mapping sdp...");
     const newSdp = sdpMap(sdp.sdp);
-    console.log("mapped sdp=" + newSdp);
 
     doLog("tcall_start: SDP-" + sdp.type + " " + newSdp);
 
@@ -386,7 +373,7 @@ function tcall_answer(tcall, sdp) {
 	const sender = tx.sender;
 	const params = sender.getParameters();
 	
-	console.log('sender=' + sender + ' params:', params);
+	// console.log('sender=' + sender + ' params:', params);
 	}
     */
 
@@ -426,12 +413,9 @@ function tcall_update(tcall, sdp) {
       doLog("tcall_update: answered!");
 
       const senders = rtc.getSenders();
-      console.log("senders=" + senders.length);
       for (const sender of senders) {
         //const sender = tx.sender;
         const params = sender.getParameters();
-
-        console.log("sender=" + sender + " params:", params);
       }
     })
     .catch((err) => {
@@ -471,11 +455,9 @@ function tcall_stats(tcall) {
       stats.forEach((stat) => {
         statsObj[stat.type] = stat;
         if (stat.type === "inbound-rtp") {
-          //console.log('inbound-rtp: ', stat);
           const ploss = stat.packetsLost;
           tcall.stats.ploss = ploss - tcall.stats.lastploss;
           tcall.stats.lastploss = ploss;
-          
           const b = stat.bytesReceived;
           tcall.stats.bytes = Math.round((b - tcall.stats.lastbytes) / 1024);
           tcall.stats.lastbytes = b;
@@ -489,7 +471,6 @@ function tcall_stats(tcall) {
           tcall.stats.lastjitter = j;
         }
       });
-      // console.log('Stats blob=' + JSON.stringify(statsJson));
       statsJson.push(statsObj);
     })
     .catch((err) => console.log("SNDR stats failed: " + err));
@@ -579,21 +560,17 @@ function tcall_sft(sftUrl, sftStatusHandler) {
   const convid = (Math.random() + 1).toString(36).substring(7);
   const fullUrl = sftUrl + "/sft/" + convid;
   const sft = { url: "", convid: convid };
-  console.log("SFT: req=", fullUrl);
   fetch(fullUrl, {
     method: "POST",
     body: JSON.stringify(confconn), // data can be `string` or {object}!
   }).then((resp) => {
-    console.log("SFT says: ", resp);
     if (resp.ok) {
       resp.json().then((sftMsg) => {
-        console.log("OFFER: ", sftMsg);
         if (sftMsg.type === "SETUP")
           pc_CreateSft(convid, sftMsg, sftStatusHandler);
       });
     } else {
       const error = resp.status.toString() + " " + resp.statusText;
-      console.log("req failed:", error);
     }
   });
 }

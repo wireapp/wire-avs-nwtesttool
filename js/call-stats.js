@@ -1,6 +1,15 @@
 let args = null;
 let statsInterval = null;
 
+const statusField = document.querySelector(".js-ok-nok-field");
+const statusIndicator = document.querySelector(".js-status-indicator");
+
+const number = document.getElementById("number");
+const kbytes = document.getElementById("kbytes");
+const packets = document.getElementById("packets");
+const packetsLost = document.getElementById("packets-lost");
+const jitterNumber = document.getElementById("jitter");
+
 const CALLS_MAX = 100; // 50
 const PCOEFF = 0.4;
 const callset = {
@@ -15,7 +24,8 @@ const callset = {
 };
 
 let wconfig;
-let candUl;
+//let candUl;
+const gatherCandidDiv = document.querySelector(".js-gathering-candidates");
 
 function stopAllCalls() {
   for (const tcall of callset.tcalls) {
@@ -27,8 +37,7 @@ function stopAllCalls() {
 }
 
 function restartClick() {
-  const restartButton = document.getElementById("restartBtn");
-  console.log("restartClick");
+  const restartCheckbox = document.getElementById("collect-data");
 
   if (callset.is_running) {
     callset.is_running = false;
@@ -38,11 +47,13 @@ function restartClick() {
     }
 
     stopAllCalls();
-    restartButton.classList.remove("on");
+    restartCheckbox.checked = false;
   } else {
     callset.is_running = true;
-    candUl.innerHTML = "";
-    restartButton.classList.add("on");
+
+    gatherCandidDiv.innerHTML = "";
+
+    restartCheckbox.checked = true;
     doStart();
   }
 }
@@ -51,7 +62,7 @@ function update_stats() {
   if (!callset.is_running) {
     return;
   }
-
+  /*
   const logoutButton = document.createElement("button");
   logoutButton.classList.add("logout-button");
   logoutButton.innerText = "Log Out";
@@ -60,7 +71,7 @@ function update_stats() {
 
   const tb = document.getElementById("infoTable");
   const rows = tb.rows;
-
+*/
   let ploss = 0;
   let jitter = 0;
   let bw = 0;
@@ -83,24 +94,20 @@ function update_stats() {
   if (callset.jitter < 0) {
     callset.jitter = 0;
   }
-
-  rows[0].cells[1].textContent = callset.nconns?.toString();
-  rows[0].cells[2].textContent = bw?.toString();
-  rows[0].cells[3].textContent = pkts?.toString();
-  rows[0].cells[4].textContent = callset.pf?.toString();
-  rows[0].cells[5].textContent = callset.jitter?.toString();
-  rows[0].cells[6].textContent = callset.SFT?.toString();
+  number.textContent = callset.nconns?.toString();
+  kbytes.textContent = bw?.toString();
+  packets.textContent = pkts?.toString();
+  packetsLost.textContent = callset.pf?.toString();
+  jitterNumber.textContent = callset.jitter?.toString();
+  //rows[0].cells[6].textContent = callset.SFT?.toString();
 }
 
 function gather_answer_handler(tcall, sdp) {
-  console.log("tcall.userid: " + tcall.userid + " " + sdp.type + "-gathered");
-
   tcall_update(tcall.peer, sdp);
 }
 
 function gather_offer_handler(tcall, sdp) {
   // stop timer
-  console.log("tcall.userid: " + tcall.userid + " " + sdp.type + "-gathered");
   const tcall2 = createCall(false);
   tcall2.peer = tcall;
   tcall.peer = tcall2;
@@ -108,17 +115,29 @@ function gather_offer_handler(tcall, sdp) {
   tcall_answer(tcall2, sdp);
 }
 
+// function populateTurnServerList() {
+//   const fu = document.querySelector(".js-turn-serv-list");
+
+//   if (!callset.is_running || callset.nconns > 0) {
+//     const span = document.createElement("span");
+//     span.textContent = "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
+//     fu.appendChild(span);
+//   }
+// }
+
 function cand_handler(tcall, cand) {
   if (!callset.is_running || callset.nconns > 0) return;
 
-  const li = document.createElement("li");
-  li.textContent = "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
-  candUl.appendChild(li);
+  const span = document.createElement("span");
+  span.textContent = "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
+  gatherCandidDiv.appendChild(span);
+
+  // const li = document.createElement("li");
+  // li.textContent = "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
+  //candUl.appendChild(li);
 }
 
 function gather_error_handler(tcall, err) {
-  console.log("tcall.userid: " + tcall.userid + " gather error=" + err);
-
   tcall_close(tcall);
 }
 
@@ -128,7 +147,7 @@ function connected_handler(tcall) {
     return;
   }
 
-  setupUi();
+  //setupUi();
 
   if (tcall.connected) return;
 
@@ -137,7 +156,6 @@ function connected_handler(tcall) {
 
   if (peer) {
     if (peer.connected) {
-      console.log("*** CONNECTED: " + tcall.userid + "<->" + peer.userid);
       callset.nconns++;
 
       if (callset.nattempts < CALLS_MAX && callset.is_running) {
@@ -151,9 +169,10 @@ function connected_handler(tcall) {
 }
 
 function createCall(offer) {
+  const wconfig = window.localStorage.getItem("wcfg");
   const userid = callset.tcalls.length?.toString();
   const tcall = tcall_new(
-    wconfig,
+    JSON.parse(wconfig || "{}"),
     "1",
     userid,
     "1",
@@ -164,7 +183,6 @@ function createCall(offer) {
     null
   );
   callset.tcalls.push(tcall);
-  console.log("createTcall=", tcall);
 
   return tcall;
 }
@@ -175,22 +193,21 @@ function newCall() {
 }
 
 function sftStatusHandler(connState) {
-  console.log("SFT status=", connState);
-  if (connState === "connected") {
+  if (connState === "connected" && statusIndicator?.textContent !== "OK") {
     setTimeout(() => {
-      sftTd.textContent = "OK";
-      sftTd.style.backgroundColor = "rgb(0, 197, 0)";
-    }, 2000);
+      statusIndicator.textContent = "OK";
+      statusField.style.backgroundColor = "#4A935C";
+    }, 1500);
   }
 }
-
+/*
 function logout() {
   window.location.href = "https://wire-calling-testtool.wire.com/";
 }
 
 const logoutBtn = document.getElementById("logout-btn");
 logoutBtn.addEventListener("click", logout);
-
+*/
 function doStart() {
   statsInterval = setInterval(() => {
     for (const tcall of callset.tcalls) {
@@ -202,6 +219,7 @@ function doStart() {
   newCall();
 }
 
+/*
 function setupUi() {
   if (!callset.setup) {
     return;
@@ -276,7 +294,7 @@ function setupUi() {
   const restartb = document.createElement("div");
   restartb.setAttribute("id", "restartBtn");
   restartb.addEventListener("click", restartClick);
-  document.body.appendChild(restartb);
+  document.bo(restartb);
 
   const checkbox = document.createElement("input");
   checkbox.setAttribute("type", "checkbox");
@@ -304,4 +322,4 @@ function setupUi() {
       logb.setAttribute("disabled", true);
     }
   });
-}
+}*/

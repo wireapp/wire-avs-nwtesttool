@@ -31,20 +31,20 @@
       <div class="toggle">
         <h3>Collect data</h3>
         <label class="switch">
-          <input id="collect-data" type="checkbox" />
+          <input id="collect-data" type="checkbox" onclick="restartClick()" />
           <span class="slider"></span>
         </label>
       </div>
 
       <div class="diagnostic-container">
-        <div class="diagnostic-tool">
+        <section class="diagnostic-tool">
           <!--sft-status-->
           <div class="sft-status">
             <div class="sft-media"><h3>Media type: Audio</h3></div>
             <div class="sft-status-frame">
-              <div class="ok-nok-field">
+              <div class="ok-nok-field js-ok-nok-field">
                 <span>Conference Calling (SFT) Status:</span>
-                <span class="status-indicator"></span>
+                <span class="js-status-indicator">NOK</span>
               </div>
               <p class="description-small">
                 The indicatior is showing a green OK or a red NOK to determine
@@ -63,27 +63,27 @@
           <div class="call-stats">
             <div class="diagnostic-element">
               <span>Number</span>
-              <span class="number">0</span>
+              <span id="number">0</span>
             </div>
             <div class="diagnostic-element">
               <span>Kbytes /s:</span>
-              <span class="kbytes">0</span>
+              <span id="kbytes">0</span>
             </div>
             <div class="diagnostic-element">
               <span>Packets /s:</span>
-              <span class="packets">0</span>
+              <span id="packets">0</span>
             </div>
             <div class="diagnostic-element">
               <span>Packets lost (%):</span>
-              <span class="packets-lost">0</span>
+              <span id="packets-lost">0</span>
             </div>
             <div class="diagnostic-element">
               <span>Jitter (ms):</span>
-              <span class="jitter">0</span>
+              <span id="jitter">0</span>
             </div>
           </div>
 
-          <div
+          <article
             id="diagnostic-el-desc-container"
             class="diagnostic-el-desc-container"
           >
@@ -122,7 +122,7 @@
               call is where jitter is below 30ms and packet loss is kept below
               1%.
             </p>
-          </div>
+          </article>
 
           <!--show-more-->
           <div id="show-details" class="diagnostic-element-info">
@@ -131,8 +131,8 @@
               <img src="../assets/info.svg" alt="Info" />
             </div>
           </div>
-        </div>
-        <div class="save-report">
+        </section>
+        <section class="save-report">
           <span class="description-main"
             >Save a debug report to get more details about your calling
             situation.<br /><br
@@ -142,11 +142,16 @@
             >I understand that the report contains sensitive data like IP
             addresses.</span
           >
-          <button id="btn-save-report" class="btn-save-report" disabled>
+          <button
+            id="btn-save-report"
+            class="btn-save-report"
+            onclick="saveLog();"
+            disabled
+          >
             Save Report
           </button>
-        </div>
-        <div class="send-report">
+        </section>
+        <section class="send-report">
           <span class="description-main"
             >Submit a request to Wire Support and attach your debug report.
             <br /><br />
@@ -155,26 +160,51 @@
           <button class="btn-send-report" id="send-report-button">
             Send Report
           </button>
-        </div>
-        <div class="diagnostic-details">
-          <div>
-            <h3>More details</h3>
-            <button class="extend-intent">
-              <img src="../assets/btn-expand.svg" alt="Extend" />
-            </button>
-            <button class="collaps-intent" hidden>
-              <img src="../assets/btn-collapse.svg" alt="Collapse" />
+        </section>
+        <section class="more-details-container">
+          <div class="more-details">
+            <button class="dropdown" onclick="showMoreDetails()">
+              <div class="details-header">
+                <h3>More details</h3>
+                <div class="image-container">
+                  <img
+                    class="extend-intent"
+                    src="../assets/btn-expand.svg"
+                    alt="Extend"
+                  />
+                  <img
+                    class="collapse-intent hidden"
+                    src="../assets/btn-collapse.svg"
+                    alt="Collapse"
+                  />
+                </div>
+              </div>
             </button>
           </div>
-          <div>
-            <span></span>
+          <div class="server-status-container hidden">
+            <div>
+              <h4>Configured TURN Server(s):</h4>
+              <div class="js-turn-serv-list"></div>
+            </div>
+            <div>
+              <h4 class="gathering-candidates">Gathering candidates...</h4>
+              <div class="js-gathering-candidates"></div>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
 
     <script src="../js/call-stats.js"></script>
     <script src="../js/testcall.js"></script>
     <script src="../js/diagnostic-tool.js"></script>
+    <script>
+      /*
+        Call on initial load
+      */
+      (function () {
+        doStart?.();
+      })();
+    </script>
   </body>
 </html>

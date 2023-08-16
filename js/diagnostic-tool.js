@@ -1,19 +1,24 @@
 window.onload = function () {
   setTimeout(onPageLoad, 1000);
   onPageLoad();
+  populateTurnServerList();
 };
 
 function onPageLoad() {
   document.getElementById("collect-data").checked = true;
 }
 
-function sftStatusHandler(connState) {
-  console.log("SFT status=", connState);
-  if (connState === "connected") {
-    setTimeout(() => {
-      sftTd.textContent = "OK";
-      sftTd.style.backgroundColor = "rgb(0, 197, 0)";
-    }, 2000);
+function populateTurnServerList() {
+  const turnServDiv = document.querySelector(".js-turn-serv-list");
+  const wcfgConfig = JSON.parse(localStorage.getItem("wcfg"));
+
+  if (wcfgConfig.ice_servers?.length > 0) {
+    wcfgConfig.ice_servers.forEach((iceServer) => {
+      const serverUrl = iceServer.urls[0];
+      const span = document.createElement("span");
+      span.textContent = serverUrl;
+      turnServDiv.appendChild(span);
+    });
   }
 }
 
@@ -47,7 +52,7 @@ logOutButton.addEventListener("click", function () {
 });
 
 //Checkbox validation
-https: function handleSaveButtonValidation() {
+function handleSaveButtonValidation() {
   const checkboxDataValidation = document.getElementById(
     "sensitive-data-validation"
   );
@@ -58,6 +63,20 @@ https: function handleSaveButtonValidation() {
   } else {
     btnSaveReport.setAttribute("disabled", true);
   }
+}
+
+function showMoreDetails() {
+  const dropdown = document.querySelector(".dropdown");
+  const extendIcon = dropdown.querySelector(".extend-intent");
+  const collapseIcon = dropdown.querySelector(".collapse-intent");
+
+  const serverStatus = document.querySelector(".server-status-container");
+
+  extendIcon.classList.toggle("hidden");
+  collapseIcon.classList.toggle("hidden");
+  serverStatus.classList.toggle("hidden");
+
+  dropdown.classList.toggle("dropdown-clicked");
 }
 
 //Attach event listeners

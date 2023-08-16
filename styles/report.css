@@ -1,3 +1,7 @@
+html {
+  overflow-y: scroll;
+}
+
 h3 {
   display: inline;
 }
@@ -151,11 +155,19 @@ input:checked + .slider:before {
 }
 
 .ok-nok-field {
-  background-color: #4a935c;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ce3342; /*#919191*/
   height: 64px;
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #dce0e3;
+  transition: all 0.24s ease 0s;
+}
+
+.ok-nok-field span {
+  margin: 4px;
 }
 
 .description-small {
@@ -278,7 +290,7 @@ input:checked + .slider:before {
 
 .btn-save-report {
   color: #fff;
-  width: 404px;
+  width: 100%;
   height: 48px;
   margin-top: 25px;
   background: #0667c8;
@@ -317,7 +329,7 @@ input:checked + .slider:before {
 }
 
 .btn-send-report {
-  width: 404px;
+  width: 100%;
   height: 48px;
   margin-top: 48px;
   background: white;
@@ -343,18 +355,65 @@ input:checked + .slider:before {
   transition: all 0.24s ease 0s;
 }
 
-.diagnostic-details {
+.more-details-container {
   flex-basis: 100%;
-  padding: 16px 24px;
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.details-header h3 {
+  font-size: 20px;
+  margin: 0%;
+}
+
+.dropdown {
   cursor: pointer;
-}
-
-.diagnostic-details:hover {
-  background-color: #f6f6f6;
-}
-
-.extend-intent,
-.collaps-intent {
+  border-radius: 8px;
   border: none;
-  background-color: transparent;
+  width: 100%;
+  background-color: white;
+  padding: 20px 24px;
+}
+
+.dropdown:hover {
+  background-color: #f6f6f6;
+  transition: all 0.24s ease 0s;
+}
+
+.dropdown-clicked {
+  box-shadow: #1c1d1f14 0px 1px 2px 0px;
+}
+
+.hidden {
+  display: none;
+}
+
+.server-status-container {
+  padding: 32px;
+  margin: 0 0;
+}
+
+.server-status-container h4 {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.server-status-container span {
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 24px 0;
+  border-radius: 8px;
+  border: 1px solid #dce0e3;
+  background-color: white;
+}
+
+.gathering-candidates {
+  padding-top: 16px;
 }
