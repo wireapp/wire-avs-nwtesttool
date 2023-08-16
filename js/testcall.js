@@ -46,10 +46,6 @@ function sdpMap(sdp) {
   return sdpLines.join("\r\n");
 }
 
-function doLog(msg) {
-  // console.log(msg);
-}
-
 function saveLog() {
   const filename = `log-${new Date().toLocaleDateString()}.txt`;
   const data = JSON.stringify(statsJson, null, 4);
@@ -72,24 +68,7 @@ function saveLog() {
   }
 }
 
-function ccallGatheringHandler(tcall, type, sdp) {
-  doLog(
-    "gather done conv:" +
-      tcall.convid +
-      "user=" +
-      tcall.userid +
-      "/" +
-      tcall.clientid +
-      "SDP-" +
-      type +
-      " " +
-      sdp
-  );
-}
-
 function gatherTimeoutHandler(tcall) {
-  doLog("gather timeout: userid=" + tcall.userid);
-
   if (tcall.cands === 0) {
     if (tcall.errorh) tcall.errorh(tcall, "gather-timeout");
   } else {
@@ -104,8 +83,6 @@ function gatheringHandler(tcall) {
 
   const state = rtc.iceGatheringState;
 
-  doLog("ice gathering userid=" + tcall.userid + " state=" + state);
-
   switch (state) {
     case "new":
       break;
@@ -118,12 +95,8 @@ function gatheringHandler(tcall) {
       if (!sdp) {
         return;
       }
-      //doLog('gatherHandler: SDP-' + sdp.type.toString() + ' =>' + sdp.sdp.toString());
 
       if (tcall.cands < 1) {
-        doLog(
-          "gatherHandler: SDP-" + sdp.type.toString() + " not enough cands"
-        );
       } else {
         callGatherHandler(tcall);
       }
@@ -134,7 +107,6 @@ function gatheringHandler(tcall) {
 
 function sftConnectionHandler(rtc, sftStatusHandler) {
   connectionState = rtc.iceConnectionState;
-  doLog("sftConnectionHandler: state=" + connectionState);
   if (sftStatusHandler) {
     sftStatusHandler(connectionState);
   }
@@ -147,7 +119,6 @@ function connectionHandler(tcall) {
   }
   const state = rtc.iceConnectionState;
 
-  doLog("connectionHandler: userid=" + tcall.userid + " state=" + state);
   sftStatusHandler(state);
   if (state === "connected") {
     if (tcall.connectedh) tcall.connectedh(tcall);
@@ -163,14 +134,6 @@ function candidateHandler(tcall, cand) {
   if (!rtc) return;
 
   if (cand && cand.candidate) {
-    doLog(
-      "candidateHandler: cand=" +
-        cand.candidate +
-        " type=" +
-        cand.type +
-        " mindex=" +
-        mindex
-    );
     tcall.cands++;
 
     if (tcall.candh) {
@@ -179,23 +142,16 @@ function candidateHandler(tcall, cand) {
 
     callGatherHandler(tcall);
   } else {
-    doLog("candidateHandler: end-of-candidates cands=" + tcall.cands);
-
     callGatherHandler(tcall);
 
     return;
   }
 }
 
-function negotiationHandler(tcall) {
-  doLog("negotiationHandler: " + tcall.userid);
-}
-
 function signallingHandler(tcall) {
   const rtc = tcall.rtc;
 
   const state = rtc.signalingState;
-  doLog("signalingHandler: state=" + state);
 }
 
 function pc_Create(tcall) {
@@ -206,8 +162,6 @@ function pc_Create(tcall) {
     iceTransportPolicy: "relay",
   };
 
-  doLog("pc_Create: creating RTCPeerConnection");
-
   const pc = window.RTCPeerConnection;
   const rtc = new pc(config);
 
@@ -216,27 +170,17 @@ function pc_Create(tcall) {
   rtc.onicecandidate = (event) => candidateHandler(tcall, event.candidate);
   rtc.onsignalingstatechange = (event) => signallingHandler(tcall);
   rtc.ondatachannel = (event) => dataChannelHandler(tcall, event);
-  rtc.onnegotiationneeded = () => negotiationHandler(tcall);
 
   rtc.ontrack = (event) => {
     const peer = tcall.peer;
-    doLog(
-      "onTrack: convid=" +
-        tcall.convid +
-        " userid=" +
-        peer.userid +
-        "/" +
-        peer.clientid +
-        " streams=" +
-        event.streams.length
-    );
 
     if (event.streams && event.streams.length > 0) {
       for (const stream of event.streams) {
-        doLog("onTrack: convid=" + tcall.convid + " stream=" + stream);
         for (const track of stream.getTracks()) {
           if (track)
-            doLog("onTrack: convid=" + tcall.convid + " track=" + track.kind);
+            console.log(
+              "onTrack: convid=" + tcall.convid + " track=" + track.kind
+            );
         }
       }
     }
@@ -280,8 +224,6 @@ function pc_CreateSft(convid, sftMsg, sftStatusHandler) {
     bundlePolicy: "max-bundle",
     rtcpMuxPolicy: "require",
   };
-
-  doLog("pc_CreateSft: creating SFT RTCPeerConnection");
 
   const pc = window.RTCPeerConnection;
   const rtc = new pc(config);
@@ -349,33 +291,17 @@ function tcall_start(tcall, convid, userid) {
   rtc.createOffer().then((sdp) => {
     const newSdp = sdpMap(sdp.sdp);
 
-    doLog("tcall_start: SDP-" + sdp.type + " " + newSdp);
-
     rtc
       .setLocalDescription({ type: sdp.type, sdp: newSdp })
       .then(() => {
         tcall.tmr = setTimeout(gatherTimeoutHandler, GATHER_TIMEOUT, tcall);
       })
-      .catch((err) => {
-        doLog("setLocalDescription: failed" + err);
-      });
+      .catch((err) => {});
   });
 }
 
 function tcall_answer(tcall, sdp) {
   const rtc = tcall.rtc;
-
-  doLog("tcall_answer: SDP-" + sdp.type + " " + sdp.sdp);
-
-  /*
-    const txs = rtc.getTransceivers();
-    for (const tx of txs) {
-	const sender = tx.sender;
-	const params = sender.getParameters();
-	
-	// console.log('sender=' + sender + ' params:', params);
-	}
-    */
 
   rtc
     .setRemoteDescription(sdp)
@@ -383,21 +309,15 @@ function tcall_answer(tcall, sdp) {
       addMedia(rtc);
 
       rtc.createAnswer().then((answer) => {
-        doLog("tcall_answer: generate SDP-" + answer.type + " " + answer.sdp);
-
         rtc
           .setLocalDescription(answer)
           .then(() => {
             tcall.tmr = setTimeout(gatherTimeoutHandler, GATHER_TIMEOUT, tcall);
           })
-          .catch((err) => {
-            doLog("setLocalDescription: failed" + err);
-          });
+          .catch((err) => {});
       });
     })
-    .catch((err) => {
-      doLog("setRemoteDescription: failed" + err);
-    });
+    .catch((err) => {});
 }
 
 function tcall_update(tcall, sdp) {
@@ -405,22 +325,16 @@ function tcall_update(tcall, sdp) {
 
   if (!rtc) return;
 
-  doLog("tcall_update: SDP-" + sdp.type + " " + sdp.sdp);
-
   rtc
     .setRemoteDescription(sdp)
     .then(() => {
-      doLog("tcall_update: answered!");
-
       const senders = rtc.getSenders();
       for (const sender of senders) {
         //const sender = tx.sender;
         const params = sender.getParameters();
       }
     })
-    .catch((err) => {
-      doLog("tcall_update: setRemoteDescription: failed err: " + err);
-    });
+    .catch((err) => {});
 }
 
 function addMedia(rtc) {
@@ -474,31 +388,9 @@ function tcall_stats(tcall) {
       statsJson.push(statsObj);
     })
     .catch((err) => console.log("SNDR stats failed: " + err));
-
-  /*
-    const txs = rtc.getSenders();
-    const rxs = rtc.getReceivers();
-
-    for(const tx of txs) {
-	tx.getStats()
-	    .then((stats) => {
-		console.log('SNDR stats: ', stats);
-		stats.forEach(
-		  
-	    .catch((err) => console.log('SNDR stats failed: ' + err));
-    }
-    
-    for(const rx of rxs) {
-	rx.getStats()
-	    .then((stats) => console.log('RCVR stats: ', stats))
-	    .catch((err) => console.log('RCVR stats failed: ' + err));
-    }    
-    */
 }
 
 function tcall_close(tcall) {
-  doLog("tcall_close: userid=" + tcall.userid);
-
   if (tcall.tmr) {
     clearTimeout(tcall.tmr);
     tcall.tmr = null;

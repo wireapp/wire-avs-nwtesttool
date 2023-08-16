@@ -24,7 +24,6 @@ const callset = {
 };
 
 let wconfig;
-//let candUl;
 const gatherCandidDiv = document.querySelector(".js-gathering-candidates");
 
 function stopAllCalls() {
@@ -62,16 +61,7 @@ function update_stats() {
   if (!callset.is_running) {
     return;
   }
-  /*
-  const logoutButton = document.createElement("button");
-  logoutButton.classList.add("logout-button");
-  logoutButton.innerText = "Log Out";
-  logoutButton.onclick = logout;
-  document.body.appendChild(logoutButton);
 
-  const tb = document.getElementById("infoTable");
-  const rows = tb.rows;
-*/
   let ploss = 0;
   let jitter = 0;
   let bw = 0;
@@ -99,7 +89,6 @@ function update_stats() {
   packets.textContent = pkts?.toString();
   packetsLost.textContent = callset.pf?.toString();
   jitterNumber.textContent = callset.jitter?.toString();
-  //rows[0].cells[6].textContent = callset.SFT?.toString();
 }
 
 function gather_answer_handler(tcall, sdp) {
@@ -115,26 +104,12 @@ function gather_offer_handler(tcall, sdp) {
   tcall_answer(tcall2, sdp);
 }
 
-// function populateTurnServerList() {
-//   const fu = document.querySelector(".js-turn-serv-list");
-
-//   if (!callset.is_running || callset.nconns > 0) {
-//     const span = document.createElement("span");
-//     span.textContent = "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
-//     fu.appendChild(span);
-//   }
-// }
-
 function cand_handler(tcall, cand) {
   if (!callset.is_running || callset.nconns > 0) return;
 
   const span = document.createElement("span");
   span.textContent = "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
   gatherCandidDiv.appendChild(span);
-
-  // const li = document.createElement("li");
-  // li.textContent = "Cand[userid=" + tcall.userid + "]=" + cand?.toString();
-  //candUl.appendChild(li);
 }
 
 function gather_error_handler(tcall, err) {
@@ -146,8 +121,6 @@ function connected_handler(tcall) {
     tcall_close(tcall);
     return;
   }
-
-  //setupUi();
 
   if (tcall.connected) return;
 
@@ -200,14 +173,7 @@ function sftStatusHandler(connState) {
     }, 1500);
   }
 }
-/*
-function logout() {
-  window.location.href = "https://wire-calling-testtool.wire.com/";
-}
 
-const logoutBtn = document.getElementById("logout-btn");
-logoutBtn.addEventListener("click", logout);
-*/
 function doStart() {
   statsInterval = setInterval(() => {
     for (const tcall of callset.tcalls) {
@@ -218,108 +184,3 @@ function doStart() {
   callset.nattempts = 1;
   newCall();
 }
-
-/*
-function setupUi() {
-  if (!callset.setup) {
-    return;
-  }
-
-  callset.setup = false;
-  const tb = document.createElement("table");
-  let th = document.createElement("th");
-  th.textContent = "Media Type";
-  tb.appendChild(th);
-
-  th = document.createElement("th");
-  th.textContent = "Number";
-  tb.appendChild(th);
-
-  th = document.createElement("th");
-  th.textContent = "KBytes/s";
-  tb.appendChild(th);
-
-  th = document.createElement("th");
-  th.textContent = "packets/s";
-  tb.appendChild(th);
-
-  th = document.createElement("th");
-  th.textContent = "Lost (%)";
-  tb.appendChild(th);
-
-  th = document.createElement("th");
-  th.textContent = "jitter (ms)";
-  tb.appendChild(th);
-
-  th = document.createElement("th");
-  th.textContent = "SFT Status";
-  tb.appendChild(th);
-
-  let tr = document.createElement("tr");
-  let td = document.createElement("td");
-  td.textContent = "audio";
-  tr.appendChild(td);
-
-  td = document.createElement("td");
-  td.textContent = "0";
-  tr.appendChild(td);
-
-  td = document.createElement("td");
-  td.textContent = "0";
-  tr.appendChild(td);
-
-  td = document.createElement("td");
-  td.textContent = "0";
-  tr.appendChild(td);
-
-  td = document.createElement("td");
-  td.textContent = "0";
-  tr.appendChild(td);
-
-  td = document.createElement("td");
-  td.textContent = "0";
-  tr.appendChild(td);
-
-  sftTd = document.createElement("td");
-  sftTd.textContent = "NOT OK";
-  sftTd.style.backgroundColor = "rgb(197, 0, 0)";
-  tr.appendChild(sftTd);
-
-  tb.appendChild(tr);
-  tb.setAttribute("id", "infoTable");
-  tb.setAttribute("align", "center");
-
-  document.body.appendChild(tb);
-
-  const restartb = document.createElement("div");
-  restartb.setAttribute("id", "restartBtn");
-  restartb.addEventListener("click", restartClick);
-  document.bo(restartb);
-
-  const checkbox = document.createElement("input");
-  checkbox.setAttribute("type", "checkbox");
-  checkbox.setAttribute("id", "enableLog");
-
-  const logb = document.createElement("button");
-  logb.setAttribute("id", "LogBtn");
-  logb.setAttribute("disabled", true);
-  logb.setAttribute("onclick", "saveLog();");
-  logb.textContent = "Extract Log";
-
-  const label = document.createElement("label");
-  label.setAttribute("for", "enableLog");
-  label.textContent =
-    "By checking this box, I confirm that I understand that the log file contains potentially sensitive data like IP addresses";
-
-  document.body.appendChild(logb);
-  document.body.appendChild(label);
-  document.body.appendChild(checkbox);
-
-  checkbox.addEventListener("change", function () {
-    if (this.checked) {
-      logb.removeAttribute("disabled");
-    } else {
-      logb.setAttribute("disabled", true);
-    }
-  });
-}*/
