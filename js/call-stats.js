@@ -4,7 +4,7 @@ let statsInterval = null;
 const statusField = document.querySelector(".js-ok-nok-field");
 const statusIndicator = document.querySelector(".js-status-indicator");
 
-const number = document.getElementById("number");
+const calls = document.getElementById("calls");
 const kbytes = document.getElementById("kbytes");
 const packets = document.getElementById("packets");
 const packetsLost = document.getElementById("packets-lost");
@@ -84,7 +84,7 @@ function update_stats() {
   if (callset.jitter < 0) {
     callset.jitter = 0;
   }
-  number.textContent = callset.nconns?.toString();
+  calls.textContent = callset.nconns?.toString();
   kbytes.textContent = bw?.toString();
   packets.textContent = pkts?.toString();
   packetsLost.textContent = callset.pf?.toString();
