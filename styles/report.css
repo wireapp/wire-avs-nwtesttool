@@ -22,6 +22,10 @@ ul {
   padding: 4px 24px;
 }
 
+.wire-full-logo {
+  cursor: pointer;
+}
+
 .title-bar {
   padding-top: 8px;
   flex: 1;
@@ -262,7 +266,7 @@ input:checked + .slider:before {
 
 .bullet-point-list {
   padding: 0 8px 0 20px;
-  margin: -10px 0;
+  margin: 10px 0;
 }
 
 .save-report,
