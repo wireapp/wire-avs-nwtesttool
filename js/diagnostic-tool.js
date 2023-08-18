@@ -48,7 +48,7 @@ sendReportButton.addEventListener("click", function () {
 
 const logOutButton = document.getElementById("logout-button");
 logOutButton.addEventListener("click", function () {
-  window.location.href = "https://wire-calling-testtool.wire.com/";
+  location.replace("https://wire-calling-testtool.wire.com/");
 });
 
 //Checkbox validation
