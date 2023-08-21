@@ -9,7 +9,7 @@
 # docker run --name nwtest -d -p 8080:8080 nwtesttool
 #
 # 3. Start tool from browser with:
-# http://localhost:8080/html/wtest.html
+# http://localhost:8080/html/login.html
 #
 # Stop test tool:
 #
@@ -40,6 +40,8 @@ WORKDIR ./usr/share/nginx/html/
 # Copy static html and js directory
 COPY ./html/ /usr/share/nginx/html/html/
 COPY ./js/ /usr/share/nginx/html/js/
+COPY ./styles/ /usr/share/nginx/html/styles/
+COPY ./assets/ /usr/share/nginx/html/assets/
 
 # Copy an nginx config to set our main page as the index
 # Using 'ADD' instead of 'COPY' invalidates the cache

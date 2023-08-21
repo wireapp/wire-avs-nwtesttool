@@ -145,6 +145,7 @@ input:checked + .slider:before {
 .sft-status {
   display: flex;
   justify-content: space-between;
+  gap: 16px;
 }
 
 .sft-media {
