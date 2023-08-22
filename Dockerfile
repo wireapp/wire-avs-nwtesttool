@@ -32,7 +32,7 @@
 #
 
 # Parent image
-FROM nginx:1.23.3-alpine
+FROM nginx:1.23.4-alpine
 
 # Set the working directory
 WORKDIR ./usr/share/nginx/html/
@@ -40,6 +40,7 @@ WORKDIR ./usr/share/nginx/html/
 # Copy static html and js directory
 COPY ./html/ /usr/share/nginx/html/html/
 COPY ./js/ /usr/share/nginx/html/js/
+COPY ./styles/ /usr/share/nginx/html/styles/
 
 # Copy an nginx config to set our main page as the index
 # Using 'ADD' instead of 'COPY' invalidates the cache
