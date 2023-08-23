@@ -28,7 +28,7 @@
 # Remove images (only for cleanup)
 #
 # docker image rm nwtesttool
-# docker image rm nginx:1.23.3-alpine-perl
+# docker image rm nginx:1.23.4-alpine-perl
 #
 
 # Parent image
@@ -41,6 +41,7 @@ WORKDIR ./usr/share/nginx/html/
 COPY ./html/ /usr/share/nginx/html/html/
 COPY ./js/ /usr/share/nginx/html/js/
 COPY ./styles/ /usr/share/nginx/html/styles/
+COPY ./assets/ /usr/share/nginx/html/assets/
 
 # Copy an nginx config to set our main page as the index
 # Using 'ADD' instead of 'COPY' invalidates the cache
