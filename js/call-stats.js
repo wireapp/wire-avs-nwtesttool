@@ -28,7 +28,7 @@ const gatherCandidDiv = document.querySelector(".js-gathering-candidates");
 
 function stopAllCalls() {
   for (const tcall of callset.tcalls) {
-    tcall_close(tcall);
+    tcallClose(tcall);
   }
   callset.nconns = 0;
   callset.nattempts = 0;
@@ -57,7 +57,7 @@ function restartClick() {
   }
 }
 
-function update_stats() {
+function updateStats() {
   if (!callset.is_running) {
     return;
   }
@@ -91,20 +91,20 @@ function update_stats() {
   jitterNumber.textContent = callset.jitter?.toString();
 }
 
-function gather_answer_handler(tcall, sdp) {
-  tcall_update(tcall.peer, sdp);
+function gatherAnswerHandler(tcall, sdp) {
+  tcallUpdate(tcall.peer, sdp);
 }
 
-function gather_offer_handler(tcall, sdp) {
+function gatherOfferHandler(tcall, sdp) {
   // stop timer
   const tcall2 = createCall(false);
   tcall2.peer = tcall;
   tcall.peer = tcall2;
 
-  tcall_answer(tcall2, sdp);
+  tcallAnswer(tcall2, sdp);
 }
 
-function cand_handler(tcall, cand) {
+function candHandler(tcall, cand) {
   if (!callset.is_running || callset.nconns > 0) return;
 
   const span = document.createElement("span");
@@ -112,13 +112,13 @@ function cand_handler(tcall, cand) {
   gatherCandidDiv.appendChild(span);
 }
 
-function gather_error_handler(tcall, err) {
-  tcall_close(tcall);
+function gatherErrorHandler(tcall, err) {
+  tcallClose(tcall);
 }
 
-function connected_handler(tcall) {
+function connectedHandler(tcall) {
   if (!callset.is_running) {
-    tcall_close(tcall);
+    tcallClose(tcall);
     return;
   }
 
@@ -144,15 +144,15 @@ function connected_handler(tcall) {
 function createCall(offer) {
   const wconfig = window.localStorage.getItem("wcfg");
   const userid = callset.tcalls.length?.toString();
-  const tcall = tcall_new(
+  const tcall = tcallNew(
     JSON.parse(wconfig || "{}"),
     "1",
     userid,
     "1",
-    offer ? gather_offer_handler : gather_answer_handler,
-    cand_handler,
-    connected_handler,
-    gather_error_handler,
+    offer ? gatherOfferHandler : gatherAnswerHandler,
+    candHandler,
+    connectedHandler,
+    gatherErrorHandler,
     null
   );
   callset.tcalls.push(tcall);
@@ -162,7 +162,7 @@ function createCall(offer) {
 
 function newCall() {
   const tcall = createCall(true);
-  tcall_start(tcall, "1", tcall.userid);
+  tcallStart(tcall, "1", tcall.userid);
 }
 
 function sftStatusHandler(connState) {
@@ -177,9 +177,9 @@ function sftStatusHandler(connState) {
 function doStart() {
   statsInterval = setInterval(() => {
     for (const tcall of callset.tcalls) {
-      tcall_stats(tcall);
+      tcallStats(tcall);
     }
-    update_stats();
+    updateStats();
   }, 1000);
   callset.nattempts = 1;
   newCall();

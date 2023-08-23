@@ -154,7 +154,7 @@ function signallingHandler(tcall) {
   const state = rtc.signalingState;
 }
 
-function pc_Create(tcall) {
+function pcCreate(tcall) {
   const config = {
     bundlePolicy: "max-bundle",
     iceServers: tcall.turn_servers.ice_servers,
@@ -219,7 +219,7 @@ function sftResponse(url, sdp) {
   });
 }
 
-function pc_CreateSft(convid, sftMsg, sftStatusHandler) {
+function pcCreateSft(convid, sftMsg, sftStatusHandler) {
   const config = {
     bundlePolicy: "max-bundle",
     rtcpMuxPolicy: "require",
@@ -240,7 +240,7 @@ function pc_CreateSft(convid, sftMsg, sftStatusHandler) {
   return rtc;
 }
 
-function tcall_new(
+function tcallNew(
   cfg,
   convid,
   userid,
@@ -278,12 +278,12 @@ function tcall_new(
     },
   };
 
-  pc_Create(tcall);
+  pcCreate(tcall);
 
   return tcall;
 }
 
-function tcall_start(tcall, convid, userid) {
+function tcallStart(tcall, convid, userid) {
   const rtc = tcall.rtc;
 
   addMedia(rtc);
@@ -300,7 +300,7 @@ function tcall_start(tcall, convid, userid) {
   });
 }
 
-function tcall_answer(tcall, sdp) {
+function tcallAnswer(tcall, sdp) {
   const rtc = tcall.rtc;
 
   rtc
@@ -320,7 +320,7 @@ function tcall_answer(tcall, sdp) {
     .catch((err) => {});
 }
 
-function tcall_update(tcall, sdp) {
+function tcallUpdate(tcall, sdp) {
   const rtc = tcall.rtc;
 
   if (!rtc) return;
@@ -356,7 +356,7 @@ function addMedia(rtc) {
     */
 }
 
-function tcall_stats(tcall) {
+function tcallStats(tcall) {
   const rtc = tcall.rtc;
 
   if (!rtc) return;
@@ -390,7 +390,7 @@ function tcall_stats(tcall) {
     .catch((err) => console.log("SNDR stats failed: " + err));
 }
 
-function tcall_close(tcall) {
+function tcallClose(tcall) {
   if (tcall.tmr) {
     clearTimeout(tcall.tmr);
     tcall.tmr = null;
@@ -430,7 +430,7 @@ function generateVideoTrack() {
   return stream.getVideoTracks();
 }
 
-function tcall_sft(sftUrl, sftStatusHandler) {
+function tcallSft(sftUrl, sftStatusHandler) {
   const confconn = {
     version: "3.0",
     type: "CONFCONN",
@@ -459,7 +459,7 @@ function tcall_sft(sftUrl, sftStatusHandler) {
     if (resp.ok) {
       resp.json().then((sftMsg) => {
         if (sftMsg.type === "SETUP")
-          pc_CreateSft(convid, sftMsg, sftStatusHandler);
+          pcCreateSft(convid, sftMsg, sftStatusHandler);
       });
     } else {
       const error = resp.status.toString() + " " + resp.statusText;
