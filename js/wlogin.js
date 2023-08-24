@@ -1,7 +1,7 @@
-function wlogin(backendUrl, username, password, worker, errHandler) {
+function wlogin(backendUrl, email, password, worker, errHandler) {
   const data = {
-    email: username,
-    password: password,
+    email,
+    password,
   };
   const errorMsg = document.getElementById("errorMsg");
 
@@ -56,12 +56,6 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
               }
             });
         })
-        .catch((error) => {
-          console.error("Error in req:", error);
-          if (errHandler) {
-            errHandler(error);
-          }
-        });
     })
     .catch((error) => {
       console.error("Error:", error);
