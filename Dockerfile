@@ -9,7 +9,7 @@
 # docker run --name nwtest -d -p 8080:8080 nwtesttool
 #
 # 3. Start tool from browser with:
-# http://localhost:8080/html/wtest.html
+# http://localhost:8080/html/login.html
 #
 # Stop test tool:
 #

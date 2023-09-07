@@ -1,9 +1,9 @@
-function wlogin(backendUrl, username, password, worker, errHandler) {
+function wlogin(backendUrl, email, password, worker, errHandler) {
   const data = {
-    email: username,
-    password: password,
+    email,
+    password,
   };
-  //const errorMsg = document.getElementById("errorMsg");
+  const errorMsg = document.getElementById("errorMsg");
 
   fetch(backendUrl + "/login?persist=false", {
     method: "POST",
@@ -15,10 +15,9 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
     .then((resp) => {
       if (!resp.ok) {
         const error = resp.status.toString() + " " + resp.statusText;
-        console.log("req failed:", error);
         if (errHandler) {
           errHandler(error);
-          //errorMsg.textContent = "Please verify your details and try again";
+          errorMsg.textContent = "Please verify your details and try again";
         }
         return;
       }
@@ -37,7 +36,6 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
             .then((resp2) => {
               if (!resp2.ok) {
                 const error = resp2.status.toString() + " " + resp2.statusText;
-                console.log("req2 failed:", error);
                 if (errHandler) {
                   errHandler(error);
                 }
@@ -45,7 +43,10 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
               }
 
               resp2.json().then((jconfig) => {
-                if (worker) worker(jconfig);
+                if (jconfig) {
+                  window.localStorage.setItem("wcfg", JSON.stringify(jconfig));
+                }
+                if (worker) worker();
               });
             })
             .catch((error) => {
@@ -55,12 +56,6 @@ function wlogin(backendUrl, username, password, worker, errHandler) {
               }
             });
         })
-        .catch((error) => {
-          console.error("Error in req:", error);
-          if (errHandler) {
-            errHandler(error);
-          }
-        });
     })
     .catch((error) => {
       console.error("Error:", error);

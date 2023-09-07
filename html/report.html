@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="../assets/favicon.ico"
+      type="image/x-icon"
+      rel="shortcut icon"
+      sizes="48x48"
+    />
+    <title>Wire · Calling Test Tool</title>
+    <link rel="stylesheet" type="text/css" href="../styles/globals.css" />
+    <link rel="stylesheet" type="text/css" href="../styles/report.css" />
+  </head>
+
+  <body>
+    <div class="main-container">
+      <div class="nav">
+        <div id="logout-button" class="wire-full-logo">
+          <img src="../assets/wire-full-logo.svg" alt="Wire Logo" />
+        </div>
+        <div class="title-bar">
+          <h2>Calling test tool</h2>
+        </div>
+        <div class="logout-space">
+          <button id="logout-button" class="logout-button">Log Out</button>
+        </div>
+      </div>
+
+      <div class="toggle">
+        <h3>Collect data</h3>
+        <label class="switch">
+          <input id="collect-data" type="checkbox" onclick="restartClick()" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="diagnostic-container">
+        <section class="diagnostic-tool">
+          <!--sft-status-->
+          <div class="sft-status">
+            <div class="sft-media"><h3>Media type: Audio</h3></div>
+            <div class="sft-status-frame">
+              <div class="ok-nok-field js-ok-nok-field">
+                <span>Conference Calling (SFT) Status:</span>
+                <span class="js-status-indicator">NOK</span>
+              </div>
+              <p class="description-small">
+                The indicatior is showing a green OK or a red NOK to determine
+                the connection state.<br />More info about SFT's can be found
+                <a
+                  class="hyperlink"
+                  target="_blank"
+                  href="https://docs.wire.com/understand/sft.html"
+                  >here</a
+                >.
+              </p>
+            </div>
+          </div>
+
+          <!--stats-->
+          <div class="call-stats">
+            <div class="diagnostic-element">
+              <span>Calls</span>
+              <span id="calls">0</span>
+            </div>
+            <div class="diagnostic-element">
+              <span>Kbytes /s:</span>
+              <span id="kbytes">0</span>
+            </div>
+            <div class="diagnostic-element">
+              <span>Packets /s:</span>
+              <span id="packets">0</span>
+            </div>
+            <div class="diagnostic-element">
+              <span>Packets lost (%):</span>
+              <span id="packets-lost">0</span>
+            </div>
+            <div class="diagnostic-element">
+              <span>Jitter (ms):</span>
+              <span id="jitter">0</span>
+            </div>
+          </div>
+
+          <article
+            id="diagnostic-el-desc-container"
+            class="diagnostic-el-desc-container"
+          >
+            <p class="diagnostic-el-desc">
+              Number of calls started to test the connectivity.
+            </p>
+            <p class="diagnostic-el-desc">
+              Total number of bytes recieved for this
+              <a
+                class="hyperlink"
+                target="_blank"
+                href="https://www.w3.org/TR/webrtc-stats/#dfn-ssrc"
+                >SSRC</a
+              >.
+            </p>
+            <p class="diagnostic-el-desc">
+              Information is transported from your computer in data packets
+              across the internet.<br /><br />The longer data packets take to
+              arrive, the more jitter can negatively impact the video and audio
+              quality.
+            </p>
+            <div class="diagnostic-el-desc">
+              <p>
+                Packet loss refers to the failure of packets to reach their
+                destination on a network.
+              </p>
+              <ul class="bullet-point-list">
+                <li>BAD: packet loss > 20% or RTT > 800ms</li>
+                <li>MEDIUM: packet loss 5-20% or RTT 400-800ms</li>
+                <li>NORMAL: packet loss < 5% and RTT < 400ms</li>
+              </ul>
+            </div>
+            <p class="diagnostic-el-desc">
+              Jitter is when there is a time delay in sending data packets over
+              your network connection.<br /><br />An example of an acceptable
+              call is where jitter is below 30ms and packet loss is kept below
+              1%.
+            </p>
+          </article>
+
+          <!--show-more-->
+          <div id="show-details" class="diagnostic-element-info">
+            <div class="show-details-container" onclick="handleShowDetails()">
+              <span>Show details</span>
+              <img src="../assets/info.svg" alt="Info" />
+            </div>
+          </div>
+        </section>
+        <section class="save-report">
+          <span class="description-main"
+            >Save a debug report to get more details about your calling
+            situation.<br /><br
+          /></span>
+          <input id="sensitive-data-validation" type="checkbox" />
+          <span class="checkbox-description"
+            >I understand that the report contains sensitive data like IP
+            addresses.</span
+          >
+          <button
+            id="btn-save-report"
+            class="btn-save-report"
+            onclick="saveLog();"
+            disabled
+          >
+            Save Report
+          </button>
+        </section>
+        <section class="send-report">
+          <span class="description-main"
+            >Submit a request to Wire Support and attach your debug report.
+            <br /><br />
+            We will reach out to you!</span
+          >
+          <button class="btn-send-report" id="send-report-button">
+            Send Report
+          </button>
+        </section>
+        <section class="more-details-container">
+          <div class="more-details">
+            <button class="dropdown" onclick="showMoreDetails()">
+              <div class="details-header">
+                <h3>More details</h3>
+                <div class="image-container">
+                  <img
+                    class="extend-intent"
+                    src="../assets/btn-expand.svg"
+                    alt="Extend"
+                  />
+                  <img
+                    class="collapse-intent hidden"
+                    src="../assets/btn-collapse.svg"
+                    alt="Collapse"
+                  />
+                </div>
+              </div>
+            </button>
+          </div>
+          <div class="server-status-container hidden">
+            <div>
+              <h4>Configured TURN Server(s):</h4>
+              <div class="js-turn-serv-list"></div>
+            </div>
+            <div>
+              <h4 class="gathering-candidates">Gathering candidates...</h4>
+              <div class="js-gathering-candidates"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="../js/call-stats.js"></script>
+    <script src="../js/testcall.js"></script>
+    <script src="../js/diagnostic-tool.js"></script>
+    <script>
+      /*
+        Call on initial load
+      */
+      (function () {
+        doStart();
+      })();
+    </script>
+  </body>
+</html>

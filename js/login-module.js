@@ -1,3 +1,4 @@
+let backendUrl = window.backendHttpsUrl;
 function showPassword() {
   const togglePassword = document.querySelector("#togglePassword");
   const password = document.querySelector("#password");
@@ -23,14 +24,6 @@ function validateInputs() {
   }
 }
 
-function login(showhide) {
-  if (showhide === "show") {
-    document.querySelector(".main-container").style.visibility = "visible";
-  } else if (showhide === "hide") {
-    document.querySelector(".main-container").style.visibility = "hidden";
-  }
-}
-
 function loginClick() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
@@ -38,12 +31,23 @@ function loginClick() {
   // Clear login password in form
   document.getElementById("password").value = "";
 
-  login("hide");
   backendLogin(username, password);
 }
 
-//Attach event listeners
+function backendLogin(username, password) {
+  wlogin(backendUrl, username, password, loginSuccess, loginError);
+}
 
+function loginSuccess() {
+  window.location.href = "report.html";
+}
+
+function loginError(error) {
+  const errorMsgDiv = document.getElementById("errorMsg");
+  errorMsgDiv.textContent = "Login failed: " + error;
+}
+
+//Attach event listeners
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const togglePassword = document.querySelector("#togglePassword");

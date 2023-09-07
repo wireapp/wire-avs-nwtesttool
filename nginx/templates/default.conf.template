@@ -8,7 +8,7 @@ server {
 
     location / {
         root /usr/share/nginx/html;
-        index html/wtest.html;
+        index html/login.html;
     }
     location /js/config.js {
         default_type text/javascript;

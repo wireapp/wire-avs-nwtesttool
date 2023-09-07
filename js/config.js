@@ -4,4 +4,4 @@
 // TODO: Alternatively, we could have the same login on the python server
 // but I think this works well enough and not sure python is actually
 // needed given this docker build. Perhaps we can remove it?
-window.backendHttpsUrl = 'https://staging-nginz-https.zinfra.io';
+window.backendHttpsUrl = "https://staging-nginz-https.zinfra.io";

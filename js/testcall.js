@@ -1,6 +1,10 @@
 const GATHER_TIMEOUT = 10000;
 let connectionState;
 
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const isLoging = urlParams.get('logging')
+
 var statsJson = [];
 
 function callGatherHandler(tcall) {
@@ -28,8 +32,6 @@ function sdpMap(sdp) {
       const auline = melems.slice(0, 3);
 
       outline = auline.join(" ") + " " + "0";
-
-      console.log("outline=" + outline);
     } else if (sdpLine.startsWith("a=rtpmap:")) {
       const melems = sdpLine.split(" ");
       const rtpmap = melems[0].split(":");
@@ -48,7 +50,9 @@ function sdpMap(sdp) {
   return sdpLines.join("\r\n");
 }
 
+
 function doLog(msg) {
+  if(isLoging)
   console.log(msg);
 }
 
@@ -74,24 +78,8 @@ function saveLog() {
   }
 }
 
-function ccallGatheringHandler(tcall, type, sdp) {
-  doLog(
-    "gather done conv:" +
-      tcall.convid +
-      "user=" +
-      tcall.userid +
-      "/" +
-      tcall.clientid +
-      "SDP-" +
-      type +
-      " " +
-      sdp
-  );
-}
-
 function gatherTimeoutHandler(tcall) {
   doLog("gather timeout: userid=" + tcall.userid);
-
   if (tcall.cands === 0) {
     if (tcall.errorh) tcall.errorh(tcall, "gather-timeout");
   } else {
@@ -120,7 +108,6 @@ function gatheringHandler(tcall) {
       if (!sdp) {
         return;
       }
-      //doLog('gatherHandler: SDP-' + sdp.type.toString() + ' =>' + sdp.sdp.toString());
 
       if (tcall.cands < 1) {
         doLog(
@@ -149,7 +136,7 @@ function connectionHandler(tcall) {
   }
   const state = rtc.iceConnectionState;
 
-  doLog("connectionHandler: userid=" + tcall.userid + " state=" + state);
+  sftStatusHandler(state);
   if (state === "connected") {
     if (tcall.connectedh) tcall.connectedh(tcall);
   }
@@ -181,7 +168,6 @@ function candidateHandler(tcall, cand) {
     callGatherHandler(tcall);
   } else {
     doLog("candidateHandler: end-of-candidates cands=" + tcall.cands);
-
     callGatherHandler(tcall);
 
     return;
@@ -199,9 +185,7 @@ function signallingHandler(tcall) {
   doLog("signalingHandler: state=" + state);
 }
 
-function pc_Create(tcall) {
-  console.log("pc_Create:", tcall);
-
+function pcCreate(tcall) {
   const config = {
     bundlePolicy: "max-bundle",
     iceServers: tcall.turn_servers.ice_servers,
@@ -219,7 +203,6 @@ function pc_Create(tcall) {
   rtc.onicecandidate = (event) => candidateHandler(tcall, event.candidate);
   rtc.onsignalingstatechange = (event) => signallingHandler(tcall);
   rtc.ondatachannel = (event) => dataChannelHandler(tcall, event);
-  rtc.onnegotiationneeded = () => negotiationHandler(tcall);
 
   rtc.ontrack = (event) => {
     const peer = tcall.peer;
@@ -233,13 +216,12 @@ function pc_Create(tcall) {
         " streams=" +
         event.streams.length
     );
-
     if (event.streams && event.streams.length > 0) {
       for (const stream of event.streams) {
         doLog("onTrack: convid=" + tcall.convid + " stream=" + stream);
         for (const track of stream.getTracks()) {
           if (track)
-            doLog("onTrack: convid=" + tcall.convid + " track=" + track.kind);
+          doLog("onTrack: convid=" + tcall.convid + " track=" + track.kind);
         }
       }
     }
@@ -249,8 +231,6 @@ function pc_Create(tcall) {
 }
 
 function sftResponse(url, sdp) {
-  console.log("sftResponse: sdp=", sdp);
-
   const setup = {
     version: "3.0",
     type: "SETUP",
@@ -272,21 +252,15 @@ function sftResponse(url, sdp) {
       "Content-Type": "application/json",
     },
   }).then((resp) => {
-    console.log("SFT says: ", resp);
     if (resp.ok) {
-      resp.json().then((sftMsg) => {
-        console.log("ANSWER: ", sftMsg);
-      });
+      resp.json().then((sftMsg) => {});
     } else {
       const error = resp.status.toString() + " " + resp.statusText;
-      console.log("req failed:", error);
     }
   });
 }
 
-function pc_CreateSft(convid, sftMsg, sftStatusHandler) {
-  console.log("pc_CreateSft:");
-
+function pcCreateSft(convid, sftMsg, sftStatusHandler) {
   const config = {
     bundlePolicy: "max-bundle",
     rtcpMuxPolicy: "require",
@@ -309,7 +283,7 @@ function pc_CreateSft(convid, sftMsg, sftStatusHandler) {
   return rtc;
 }
 
-function tcall_new(
+function tcallNew(
   cfg,
   convid,
   userid,
@@ -347,20 +321,18 @@ function tcall_new(
     },
   };
 
-  pc_Create(tcall);
+  pcCreate(tcall);
 
   return tcall;
 }
 
-function tcall_start(tcall, convid, userid) {
+function tcallStart(tcall, convid, userid) {
   const rtc = tcall.rtc;
 
   addMedia(rtc);
 
   rtc.createOffer().then((sdp) => {
-    console.log("mapping sdp...");
     const newSdp = sdpMap(sdp.sdp);
-    console.log("mapped sdp=" + newSdp);
 
     doLog("tcall_start: SDP-" + sdp.type + " " + newSdp);
 
@@ -375,21 +347,9 @@ function tcall_start(tcall, convid, userid) {
   });
 }
 
-function tcall_answer(tcall, sdp) {
+function tcallAnswer(tcall, sdp) {
   const rtc = tcall.rtc;
-
   doLog("tcall_answer: SDP-" + sdp.type + " " + sdp.sdp);
-
-  /*
-    const txs = rtc.getTransceivers();
-    for (const tx of txs) {
-	const sender = tx.sender;
-	const params = sender.getParameters();
-	
-	console.log('sender=' + sender + ' params:', params);
-	}
-    */
-
   rtc
     .setRemoteDescription(sdp)
     .then(() => {
@@ -397,7 +357,6 @@ function tcall_answer(tcall, sdp) {
 
       rtc.createAnswer().then((answer) => {
         doLog("tcall_answer: generate SDP-" + answer.type + " " + answer.sdp);
-
         rtc
           .setLocalDescription(answer)
           .then(() => {
@@ -413,25 +372,20 @@ function tcall_answer(tcall, sdp) {
     });
 }
 
-function tcall_update(tcall, sdp) {
+function tcallUpdate(tcall, sdp) {
   const rtc = tcall.rtc;
 
   if (!rtc) return;
-
   doLog("tcall_update: SDP-" + sdp.type + " " + sdp.sdp);
 
   rtc
     .setRemoteDescription(sdp)
     .then(() => {
       doLog("tcall_update: answered!");
-
       const senders = rtc.getSenders();
-      console.log("senders=" + senders.length);
       for (const sender of senders) {
         //const sender = tx.sender;
         const params = sender.getParameters();
-
-        console.log("sender=" + sender + " params:", params);
       }
     })
     .catch((err) => {
@@ -458,7 +412,7 @@ function addMedia(rtc) {
     */
 }
 
-function tcall_stats(tcall) {
+function tcallStats(tcall) {
   const rtc = tcall.rtc;
 
   if (!rtc) return;
@@ -471,11 +425,9 @@ function tcall_stats(tcall) {
       stats.forEach((stat) => {
         statsObj[stat.type] = stat;
         if (stat.type === "inbound-rtp") {
-          //console.log('inbound-rtp: ', stat);
           const ploss = stat.packetsLost;
           tcall.stats.ploss = ploss - tcall.stats.lastploss;
           tcall.stats.lastploss = ploss;
-          
           const b = stat.bytesReceived;
           tcall.stats.bytes = Math.round((b - tcall.stats.lastbytes) / 1024);
           tcall.stats.lastbytes = b;
@@ -489,35 +441,13 @@ function tcall_stats(tcall) {
           tcall.stats.lastjitter = j;
         }
       });
-      // console.log('Stats blob=' + JSON.stringify(statsJson));
       statsJson.push(statsObj);
     })
     .catch((err) => console.log("SNDR stats failed: " + err));
-
-  /*
-    const txs = rtc.getSenders();
-    const rxs = rtc.getReceivers();
-
-    for(const tx of txs) {
-	tx.getStats()
-	    .then((stats) => {
-		console.log('SNDR stats: ', stats);
-		stats.forEach(
-		  
-	    .catch((err) => console.log('SNDR stats failed: ' + err));
-    }
-    
-    for(const rx of rxs) {
-	rx.getStats()
-	    .then((stats) => console.log('RCVR stats: ', stats))
-	    .catch((err) => console.log('RCVR stats failed: ' + err));
-    }    
-    */
 }
 
-function tcall_close(tcall) {
+function tcallClose(tcall) {
   doLog("tcall_close: userid=" + tcall.userid);
-
   if (tcall.tmr) {
     clearTimeout(tcall.tmr);
     tcall.tmr = null;
@@ -557,7 +487,7 @@ function generateVideoTrack() {
   return stream.getVideoTracks();
 }
 
-function tcall_sft(sftUrl, sftStatusHandler) {
+function tcallSft(sftUrl, sftStatusHandler) {
   const confconn = {
     version: "3.0",
     type: "CONFCONN",
@@ -579,21 +509,17 @@ function tcall_sft(sftUrl, sftStatusHandler) {
   const convid = (Math.random() + 1).toString(36).substring(7);
   const fullUrl = sftUrl + "/sft/" + convid;
   const sft = { url: "", convid: convid };
-  console.log("SFT: req=", fullUrl);
   fetch(fullUrl, {
     method: "POST",
     body: JSON.stringify(confconn), // data can be `string` or {object}!
   }).then((resp) => {
-    console.log("SFT says: ", resp);
     if (resp.ok) {
       resp.json().then((sftMsg) => {
-        console.log("OFFER: ", sftMsg);
         if (sftMsg.type === "SETUP")
-          pc_CreateSft(convid, sftMsg, sftStatusHandler);
+          pcCreateSft(convid, sftMsg, sftStatusHandler);
       });
     } else {
       const error = resp.status.toString() + " " + resp.statusText;
-      console.log("req failed:", error);
     }
   });
 }

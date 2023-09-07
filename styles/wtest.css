@@ -1,18 +1,3 @@
-* {
-  box-sizing: border-box;
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-}
-
-html,
-body {
-  background: #edeff0;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-}
-
 .main-container {
   display: flex;
   justify-content: center;
@@ -26,7 +11,7 @@ body {
   width: 480px;
 }
 
-@media only screen and (max-width: 765px) {
+@media only screen and (max-width: 768px) {
   .login-form {
     width: 80%;
   }
