@@ -39,7 +39,7 @@ function backendLogin(username, password) {
 }
 
 function loginSuccess() {
-  window.location.href = "report.html";
+  window.location.href = "html/report.html";
 }
 
 function loginError(error) {
