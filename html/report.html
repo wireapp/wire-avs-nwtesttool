@@ -17,7 +17,7 @@
   <body>
     <div class="main-container">
       <div class="nav">
-        <div id="logout-button" class="wire-full-logo">
+        <div class="wire-full-logo">
           <img src="../assets/wire-full-logo.svg" alt="Wire Logo" />
         </div>
         <div class="title-bar">
@@ -203,6 +203,9 @@
         Call on initial load
       */
       (function () {
+        if (!localStorage.getItem("wcfg")) {
+          window.location.href = "html/login.html";
+        }
         doStart();
       })();
     </script>
