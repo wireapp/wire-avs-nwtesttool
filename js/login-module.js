@@ -22,6 +22,15 @@ function validateInputs() {
   } else {
     loginButton.setAttribute("disabled", true);
   }
+
+  usernameInput.addEventListener("keypress", handleKeyPress);
+  passwordInput.addEventListener("keypress", handleKeyPress);
+}
+
+function handleKeyPress(event) {
+  if (event.key === "Enter") {
+    loginBtn.click();
+  }
 }
 
 function loginClick() {

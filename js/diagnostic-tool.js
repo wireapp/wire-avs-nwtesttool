@@ -48,7 +48,7 @@ sendReportButton.addEventListener("click", function () {
 
 function logout() {
   localStorage.removeItem("wcfg");
-  window.location.href = "html/login.html";
+  window.location.href = "/";
 }
 
 const logOutButton = document.querySelector(".js-logout");
