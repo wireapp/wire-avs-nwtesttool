@@ -46,10 +46,16 @@ sendReportButton.addEventListener("click", function () {
   window.open("https://support.wire.com/hc/en-us/requests/new", "_blank");
 });
 
-const logOutButton = document.getElementById("logout-button");
-logOutButton.addEventListener("click", function () {
-  location.replace("https://wire-calling-testtool.wire.com/");
-});
+function logout() {
+  localStorage.removeItem("wcfg");
+  window.location.href = "html/login.html";
+}
+
+const logOutButton = document.querySelector(".js-logout");
+const wireFullLogo = document.querySelector(".js-wire-full-logo");
+
+logOutButton.addEventListener("click", logout);
+wireFullLogo.addEventListener("click", logout);
 
 //Checkbox validation
 function handleSaveButtonValidation() {
