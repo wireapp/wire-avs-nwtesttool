@@ -12,6 +12,13 @@
     <title>Wire · Calling Test Tool</title>
     <link rel="stylesheet" type="text/css" href="../styles/globals.css" />
     <link rel="stylesheet" type="text/css" href="../styles/report.css" />
+    <script>
+      (function () {
+        if (!localStorage.getItem("wcfg")) {
+          window.location.href = "/";
+        }
+      })();
+    </script>
   </head>
 
   <body>
@@ -203,9 +210,6 @@
         Call on initial load
       */
       (function () {
-        if (!localStorage.getItem("wcfg")) {
-          window.location.href = "html/login.html";
-        }
         doStart();
       })();
     </script>
